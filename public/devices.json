@@ -1,46 +1,42 @@
 [
   {
-    "name": "Viessmann Vitodens 100-W",
-    "description": "Dujinis katilas su integruotu boileriu, tinkamas iki 120 m² namui, efektyvus ir patikimas.",
-    "supportsGas": true,
-    "supportsSolar": false,
-    "supportsOwnElectricity": false,
-    "hasBoiler": true,
-    "minBudget": 3000,
-    "maxArea": 120,
-    "suitableFor": ["senas", "naujas"]
+    "id": "1",
+    "type": "Dujinis katilas",
+    "brand": "Protherm Gepard 24",
+    "power_kw": 24,
+    "price_eur": 1300,
+    "vendors": [
+      { "name": "Sildymas.lt", "url": "https://sildymas.lt/protherm-gepard-24" },
+      { "name": "Katilai123", "url": "https://katilai123.lt/protherm-gepard-24" }
+    ],
+    "gas_required": true,
+    "solar_compatible": false,
+    "own_power_plant_required": false
   },
   {
-    "name": "Panasonic Aquarea T-CAP",
-    "description": "Šilumos siurblys oras–vanduo, ypač efektyvus su saulės baterijomis, tinkamas A+ namui.",
-    "supportsGas": false,
-    "supportsSolar": true,
-    "supportsOwnElectricity": true,
-    "hasBoiler": false,
-    "minBudget": 7000,
-    "maxArea": 200,
-    "suitableFor": ["naujas", "A+"]
+    "id": "2",
+    "type": "Šilumos siurblys oras-vanduo",
+    "brand": "Panasonic Aquarea 9kW",
+    "power_kw": 9,
+    "price_eur": 4300,
+    "vendors": [
+      { "name": "Orasvanduo.lt", "url": "https://orasvanduo.lt/panasonic-aquarea-9kw" }
+    ],
+    "gas_required": false,
+    "solar_compatible": true,
+    "own_power_plant_required": false
   },
   {
-    "name": "Protherm Gepard 23 MOV",
-    "description": "Kompaktiškas dujinis katilas be boilerio, pigus ir tinkamas mažesniam senam būstui.",
-    "supportsGas": true,
-    "supportsSolar": false,
-    "supportsOwnElectricity": false,
-    "hasBoiler": false,
-    "minBudget": 2000,
-    "maxArea": 80,
-    "suitableFor": ["senas"]
-  },
-  {
-    "name": "Daikin Altherma 3",
-    "description": "Efektyvus šilumos siurblys su integruotu boileriu, dirba ir su saulės energija.",
-    "supportsGas": false,
-    "supportsSolar": true,
-    "supportsOwnElectricity": true,
-    "hasBoiler": true,
-    "minBudget": 9000,
-    "maxArea": 160,
-    "suitableFor": ["naujas", "A+"]
+    "id": "3",
+    "type": "Šilumos siurblys oras-oras",
+    "brand": "Haier Flexis Plus 5kW",
+    "power_kw": 5,
+    "price_eur": 1200,
+    "vendors": [
+      { "name": "SilumosMeistrai.lt", "url": "https://silumosmeistrai.lt/haier-flexis-plus-5kw" }
+    ],
+    "gas_required": false,
+    "solar_compatible": true,
+    "own_power_plant_required": false
   }
 ]
