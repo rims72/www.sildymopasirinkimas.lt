@@ -6,6 +6,8 @@ export default function HeatingAssistant() {
     area: '',
     hasGas: false,
     hasBoiler: false,
+    hasElectricity: false,
+    hasSolar: false,
     budget: '',
   });
 
@@ -21,11 +23,39 @@ export default function HeatingAssistant() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const mockResponse = {
-      recommendation: 'Siūlome Viessmann Vitodens 100-W',
-      reason: 'Tinka 100 m² namui, turi integruotą boilerį, efektyvus ir nebrangus',
-    };
-    setResult(mockResponse);
+    try {
+      const res = await fetch('/devices.json');
+      const data = await res.json();
+      const filtered = data.filter((device) => {
+        return (
+          (form.houseType === '' || device.type === form.houseType) &&
+          Number(form.area) >= device.minArea &&
+          Number(form.area) <= device.maxArea &&
+          (!device.requiresGas || form.hasGas) &&
+          (!device.requiresElectricity || form.hasElectricity) &&
+          (!device.solarOptimized || form.hasSolar) &&
+          (!device.boiler || form.hasBoiler) &&
+          Number(form.budget) >= device.price
+        );
+      });
+
+      if (filtered.length > 0) {
+        setResult({
+          recommendation: filtered[0].name,
+          reason: `Atitinka jūsų poreikius (${filtered[0].type} namui, ${filtered[0].price} €)`
+        });
+      } else {
+        setResult({
+          recommendation: 'Nerasta tinkamo įrenginio',
+          reason: 'Bandykite padidinti biudžetą arba pakeisti sąlygas'
+        });
+      }
+    } catch (error) {
+      setResult({
+        recommendation: 'Klaida',
+        reason: 'Nepavyko gauti duomenų apie įrenginius'
+      });
+    }
   };
 
   return (
@@ -48,6 +78,11 @@ export default function HeatingAssistant() {
         </div>
 
         <div>
+          <label className="block">Biudžetas (€)</label>
+          <input type="number" name="budget" value={form.budget} onChange={handleChange} className="w-full border p-2 rounded" />
+        </div>
+
+        <div>
           <label className="inline-flex items-center">
             <input type="checkbox" name="hasGas" checked={form.hasGas} onChange={handleChange} className="mr-2" />
             Yra dujų įvadas
@@ -62,8 +97,17 @@ export default function HeatingAssistant() {
         </div>
 
         <div>
-          <label className="block">Biudžetas (€)</label>
-          <input type="number" name="budget" value={form.budget} onChange={handleChange} className="w-full border p-2 rounded" />
+          <label className="inline-flex items-center">
+            <input type="checkbox" name="hasElectricity" checked={form.hasElectricity} onChange={handleChange} className="mr-2" />
+            Yra nuosava elektrinė
+          </label>
+        </div>
+
+        <div>
+          <label className="inline-flex items-center">
+            <input type="checkbox" name="hasSolar" checked={form.hasSolar} onChange={handleChange} className="mr-2" />
+            Yra saulės baterijos
+          </label>
         </div>
 
         <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded shadow">Ieškoti sprendimo</button>
@@ -78,4 +122,4 @@ export default function HeatingAssistant() {
       )}
     </div>
   );
-}
+    }
