@@ -38,7 +38,6 @@ function HeatingAssistant() {
   }
 
   function handleSendProposal() {
-    // Compose email (demo version)
     const body = `
 Sveiki,
 
