@@ -1,9 +1,9 @@
-import React from 'react';
-import HeatingAssistant from './HeatingAssistant';
+import React from "react";
+import HeatingAssistant from "./HeatingAssistant";
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen bg-slate-100 py-8">
       <HeatingAssistant />
     </div>
   );
