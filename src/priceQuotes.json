@@ -38,7 +38,8 @@
           "url": "https://orokondicionavimas.lt/panasonic-aquarea-hp-mono-bloc-wh-mdc07j3e5",
           "price_eur": 4329
         }
-      ]
+      ],
+      "checked_on": "2026-11-01"
     },
     "hp-panasonic-9": {
       "model": "Aquarea Mono 9 kW",
@@ -64,7 +65,8 @@
           "url": "https://home360.lt/preke/panasonic-silumos-siurblys-oras-vanduo-aquarea-mono-bloc-wh-mdc09j3e5/",
           "price_eur": 4233
         }
-      ]
+      ],
+      "checked_on": "2026-11-01"
     },
     "hp-panasonic-12": {
       "model": "Aquarea Mono T-CAP 12 kW",
@@ -91,7 +93,200 @@
           "url": "https://www.santechnikaplius.lt/panasonic-aquarea-silumos-siurblys-mono-bloc-t-cap-12kw",
           "price_eur": 6850
         }
+      ],
+      "checked_on": "2026-11-01"
+    },
+    "hp-daikin-8": {
+      "model": "Altherma 3 8 kW",
+      "sku": "ERGA08EVH7/EHBH08E6V",
+      "note": "Split su sieniniu hidromoduliu, be karšto vandens talpos. Puslapyje šio 8 kW klasės komplekto šildymo galia nurodyta 9,37 kW.",
+      "checked_on": "2026-11-01",
+      "offers": [
+        {
+          "shop": "Altherma.lt",
+          "url": "https://altherma.lt/",
+          "price_eur": 5587
+        }
+      ]
+    },
+    "hp-daikin-11": {
+      "model": "Altherma 3 11 kW",
+      "sku": "ERLA11DW1/EBVH11S23D6V",
+      "note": "Split su integruota 230 l talpa, 400 V. Puslapyje šildymo galia nurodyta 12,44 kW.",
+      "checked_on": "2026-11-01",
+      "offers": [
+        {
+          "shop": "Altherma.lt",
+          "url": "https://altherma.lt/",
+          "price_eur": 10437
+        }
+      ]
+    },
+    "hp-mitsu-112": {
+      "model": "Ecodan 11.2 kW",
+      "sku": "EHPX-YM9D / PUZ-WM112YAA",
+      "note": "Komplektas be boilerio, 400 V. Karšto vandens talpa perkama atskirai.",
+      "checked_on": "2026-11-01",
+      "offers": [
+        {
+          "shop": "Oro meistras",
+          "url": "https://oromeistras.lt/mitsubishi-oras-vanduo/11210-kw-mitsubishi-electric-package-iki-25c-silumos-siurblys-oras-vanduo-be-boilerio-ehpx-ym9d-puz-wm112yaa.html",
+          "price_eur": 8360
+        }
+      ]
+    },
+    "hp-nibe-8": {
+      "model": "F2040-8",
+      "sku": "F2040-8 + VVM 320",
+      "note": "Kaina už lauko modulį ir vidaus modulį VVM 320, ne už vieną lauko bloką.",
+      "checked_on": "2026-11-01",
+      "offers": [
+        {
+          "shop": "Tavo šildymas",
+          "url": "https://www.tavosildymas.lt/oras-vanduo-nibe-f2040-vvm320",
+          "price_eur": 8208
+        }
+      ]
+    },
+    "hp-nibe-12": {
+      "model": "F2040-12",
+      "sku": "F2040-12 + VVM 320",
+      "note": "Kaina už lauko modulį ir vidaus modulį VVM 320, ne už vieną lauko bloką.",
+      "checked_on": "2026-11-01",
+      "offers": [
+        {
+          "shop": "Tavo šildymas",
+          "url": "https://www.tavosildymas.lt/oras-vanduo-nibe-f2040-vvm320",
+          "price_eur": 9162
+        }
+      ]
+    },
+    "hp-viessmann-150a-10": {
+      "model": "Vitocal 150-A 10 kW",
+      "sku": "151.A10",
+      "note": "Monoblokas, R290, trifazis. Karšto vandens talpa jungiama atskirai.",
+      "checked_on": "2026-11-01",
+      "offers": [
+        {
+          "shop": "Katilai.lt",
+          "url": "https://www.katilai.lt/monoblokas-orasvanduo-viessmann-vitocal-150-a-151a10-10kw",
+          "price_eur": 9950
+        }
+      ]
+    },
+    "hp-bosch-7000i-9": {
+      "model": "Compress 7000i 9 kW",
+      "sku": "CS7000iAW 9 / AWE 9",
+      "note": "Lauko blokas ir sieninis modulis. Karšto vandens talpa jungiama atskirai.",
+      "checked_on": "2026-11-01",
+      "offers": [
+        {
+          "shop": "Saugus pasaulis",
+          "url": "https://www.sauguspasaulis.lt/bosch-silumos-siurbliai-oras-vanduo/37173",
+          "price_eur": 8187
+        }
+      ]
+    },
+    "hp-midea-8": {
+      "model": "M-Thermal Arctic 8.3 kW",
+      "sku": "A100/CGN8-B + V8W/D2N8-B",
+      "note": "Viešai parduodama Arctic 8,3 kW versija. Katalogo pavadinimas buvo M-Thermal 8 kW.",
+      "checked_on": "2026-11-01",
+      "offers": [
+        {
+          "shop": "Nordic Master",
+          "url": "https://nordicmaster.lt/collections/silumos-siurbliai-oras-vanduo",
+          "price_eur": 3759
+        },
+        {
+          "shop": "Vedela",
+          "url": "https://www.vedela.lt/33-oras-vanduo/240-oras-vanduo-silumos-siurblys-midea-arctic-83-84-kw.html",
+          "price_eur": 3949
+        }
+      ]
+    },
+    "hp-gree-10": {
+      "model": "Versati III 10 kW",
+      "sku": "Versati III 10 kW",
+      "note": "Puslapyje nominali šildymo galia nurodyta 9,5 kW, pavadinime 10 kW. Be integruotos talpos.",
+      "checked_on": "2026-11-01",
+      "offers": [
+        {
+          "shop": "Įrangos meistrai",
+          "url": "https://irangosmeistrai.lt/produktas/gree-versati-iii-10-kw-oras-vanduo-silumos-siurblys/",
+          "price_eur": 3690
+        }
+      ]
+    },
+    "hp-hisense-8": {
+      "model": "Hi-Therma Split 8 kW",
+      "sku": "Hi-Therma Split 8 kW",
+      "note": "Vienfazis split, be integruotos talpos.",
+      "checked_on": "2026-11-01",
+      "offers": [
+        {
+          "shop": "Esaurida",
+          "url": "https://esaurida.lt/produktu-zyme/hinsense/",
+          "price_eur": 3656
+        }
+      ]
+    },
+    "hp-ch-10": {
+      "model": "CH-HP 10 kW",
+      "sku": "CH-HP10MIRM",
+      "note": "Monoblokas UNITHERM. Parduotuvės kaina 5 720,88 €, čia suapvalinta iki euro.",
+      "checked_on": "2026-11-01",
+      "offers": [
+        {
+          "shop": "Vedela",
+          "url": "https://www.vedela.lt/33-oras-vanduo/196-oras-vanduo-silumos-siurblys-cooperhunter-monoblock-unitherm-88-10-kw.html",
+          "price_eur": 5721
+        }
+      ]
+    },
+    "el-protherm-14": {
+      "model": "Ray 14 kW",
+      "sku": "Ray 14 KE",
+      "checked_on": "2026-11-01",
+      "offers": [
+        {
+          "shop": "Komforto meistrai",
+          "url": "https://www.komfortomeistrai.lt/katilai/elektriniai-katilai",
+          "price_eur": 777
+        }
+      ]
+    },
+    "gas-viessmann-19": {
+      "model": "Vitodens 050-W 19 kW",
+      "sku": "B0HA 3,2–19 kW",
+      "note": "Šildymui, karštas vanduo atskirame boileryje. Parduotuvės kaina 1 035,26 €, čia suapvalinta iki euro.",
+      "checked_on": "2026-11-01",
+      "offers": [
+        {
+          "shop": "Katilų turgus",
+          "url": "https://www.katiluturgus.lt/viessmann-vitodens-050-w-sieninis-dujinis-kondensacinis-katilas",
+          "price_eur": 1035
+        }
+      ]
+    },
+    "pellet-kostrzewa-24": {
+      "model": "Mini Bio 20 kW",
+      "sku": "Mini Bio 20 kW",
+      "note": "Viešai parduodamas Mini Bio 20 kW (6–20 kW). Katalogo intervalas 8–24 kW nėra vienas modelis.",
+      "checked_on": "2026-11-01",
+      "offers": [
+        {
+          "shop": "Šiltas.lt",
+          "url": "https://www.siltas.lt/granuliniai-katilai/mini-bio-20-kw-24027.html",
+          "price_eur": 3790
+        },
+        {
+          "shop": "Visi katilai",
+          "url": "https://visikatilai.lt/mini-bio/kostrzewa/mini-bio-20-kw",
+          "price_eur": 3820
+        }
       ]
     }
-  }
+  },
+  "valid_days": 7
 }

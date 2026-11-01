@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import catalog from "./catalog.json";
 import priceBook from "./priceQuotes.json";
 import { withPublicPrices } from "./publicPrices";
 
-const devices = withPublicPrices(
-  [...catalog.premium, ...catalog.budget],
-  priceBook
-);
+function todayIso() {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${now.getFullYear()}-${month}-${day}`;
+}
 
 function formatEur(amount) {
   return new Intl.NumberFormat("lt-LT", {
@@ -25,6 +27,15 @@ function formatPower(device) {
 }
 
 function HeatingAssistant() {
+  const devices = useMemo(
+    () =>
+      withPublicPrices(
+        [...catalog.premium, ...catalog.budget],
+        priceBook,
+        todayIso()
+      ),
+    []
+  );
   const [inputs, setInputs] = useState({
     houseType: "",
     area: "",
@@ -159,10 +170,11 @@ Ačiū.
       </div>
       <h2 className="text-xl font-semibold mt-4 mb-2">Siūlomi įrenginiai</h2>
       <p className="text-sm text-gray-600 mb-3">
-        Panasonic kainos yra mažiausia vieša įrangos kaina su PVM, be montavimo.
+        Patikrinta kaina yra mažiausia vieša įrangos kaina su PVM, be montavimo.
         Nuoroda veda į puslapį, kuriame ta kaina parašyta. Vidurkis skaičiuojamas
-        iš patikrintų Lietuvos parduotuvių. Tikrinta {priceBook.checked_on}. Kitų
-        gamintojų kainos dar nepatikrintos.
+        iš tų pačių patikrintų pasiūlymų. Kaina galioja {priceBook.valid_days} dienas
+        po patikrinimo. Praėjus savaitei ta pati eilutė lieka, bet žymima kaip
+        pasenusi, kol jos vietoje įrašoma nauja paieška.
       </p>
       {["premium", "budget"].map((tier) => {
         const rows = filteredDevices.filter((device) => device.tier === tier);
@@ -210,9 +222,16 @@ Ačiū.
                       <td className="border p-2 text-center">
                         <div>{formatEur(d.price_eur)}</div>
                         {d.price_verified ? (
-                          <div className="text-xs text-gray-500">
-                            vidurkis {formatEur(d.price_average_eur)} iš {d.price_offer_count}
-                          </div>
+                          <>
+                            <div className="text-xs text-gray-500">
+                              vidurkis {formatEur(d.price_average_eur)} iš {d.price_offer_count}
+                            </div>
+                            <div className={d.price_current ? "text-xs text-gray-500" : "text-xs text-amber-700"}>
+                              {d.price_current
+                                ? `galioja iki ${d.price_valid_until}`
+                                : `pasenusi nuo ${d.price_valid_until}`}
+                            </div>
+                          </>
                         ) : (
                           <div className="text-xs text-gray-400">nepatikrinta</div>
                         )}
