@@ -1,0 +1,97 @@
+{
+  "checked_on": "2026-11-01",
+  "market": "LT",
+  "includes_vat": true,
+  "includes_installation": false,
+  "models": {
+    "hp-panasonic-7": {
+      "model": "Aquarea Mono 7 kW",
+      "sku": "WH-MDC07J3E5",
+      "offers": [
+        {
+          "shop": "Technika Jums",
+          "url": "https://www.technikajums.lt/produktas/panasonic-oras-vanduo-mono-blokai/",
+          "price_eur": 3820
+        },
+        {
+          "shop": "Oro meistras",
+          "url": "https://oromeistras.lt/silumos-siurbliai-oras-vanduo/7-kw-mono-bloc-j-kartos-panasonic-aquarea-silumos-siurblys-wh-mdc07j3e5.html",
+          "price_eur": 3945
+        },
+        {
+          "shop": "Daikra",
+          "url": "https://daikra.lt/katalogas/panasonic-aquarea-silumos-siurblys-wh-mdc07j3e5-monoblokas/",
+          "price_eur": 3950
+        },
+        {
+          "shop": "Home360",
+          "url": "https://home360.lt/preke/panasonic-silumos-siurblys-oras-vanduo-aquarea-mono-bloc-wh-mdc07j3e5/",
+          "price_eur": 4000
+        },
+        {
+          "shop": "Venticija",
+          "url": "https://venticija.lt/produktas/panasonic-aquarea-silumos-siurblys-mono-bloc-7-kw-r32/",
+          "price_eur": 4049
+        },
+        {
+          "shop": "Oro kondicionavimas",
+          "url": "https://orokondicionavimas.lt/panasonic-aquarea-hp-mono-bloc-wh-mdc07j3e5",
+          "price_eur": 4329
+        }
+      ]
+    },
+    "hp-panasonic-9": {
+      "model": "Aquarea Mono 9 kW",
+      "sku": "WH-MDC09J3E5",
+      "offers": [
+        {
+          "shop": "Technika Jums",
+          "url": "https://www.technikajums.lt/produktas/panasonic-oras-vanduo-mono-blokai/",
+          "price_eur": 4030
+        },
+        {
+          "shop": "Oro meistras",
+          "url": "https://oromeistras.lt/silumos-siurbliai-oras-vanduo/9-kw-mono-bloc-j-kartos-panasonic-aquarea-silumos-siurblys-wh-mdc09j3e5.html",
+          "price_eur": 4175
+        },
+        {
+          "shop": "Panasonic šilumos siurbliai",
+          "url": "https://www.panasonicsilumossiurbliai.lt/preke/53_panasonic-silumos-siurblys-wh-mdc09j3e5-9kw-vienfazis.html",
+          "price_eur": 4182
+        },
+        {
+          "shop": "Home360",
+          "url": "https://home360.lt/preke/panasonic-silumos-siurblys-oras-vanduo-aquarea-mono-bloc-wh-mdc09j3e5/",
+          "price_eur": 4233
+        }
+      ]
+    },
+    "hp-panasonic-12": {
+      "model": "Aquarea Mono T-CAP 12 kW",
+      "sku": "WH-MXC12J9E8",
+      "note": "J kartos paprasto 12 kW monobloko (R32, 230 V) viešose Lietuvos parduotuvėse nėra. Kaina už T-CAP WH-MXC12J9E8, 400 V.",
+      "offers": [
+        {
+          "shop": "Technika Jums",
+          "url": "https://www.technikajums.lt/produktas/panasonic-oras-vanduo-mono-blokai/",
+          "price_eur": 5980
+        },
+        {
+          "shop": "Home360",
+          "url": "https://home360.lt/preke/panasonic-silumos-siurblys-oras-vanduo-aquarea-mono-bloc-t-cap-wh-mxc12j9e8/",
+          "price_eur": 6490
+        },
+        {
+          "shop": "Termo1",
+          "url": "https://termo1.lt/silumos-siurbliai/monoblokai/panasonic-silumos-siurblys-wh-mxc12j9e8-12kw-vandens-talpa-nera/",
+          "price_eur": 6532
+        },
+        {
+          "shop": "Santechnika Plius",
+          "url": "https://www.santechnikaplius.lt/panasonic-aquarea-silumos-siurblys-mono-bloc-t-cap-12kw",
+          "price_eur": 6850
+        }
+      ]
+    }
+  }
+}
