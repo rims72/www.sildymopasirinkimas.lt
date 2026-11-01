@@ -1,7 +1,41 @@
-import React, { useState, useEffect } from "react";
-import devices from "./devices.json";
+import React, { useState, useEffect, useMemo } from "react";
+import catalog from "./catalog.json";
+import priceBook from "./priceQuotes.json";
+import { withPublicPrices } from "./publicPrices";
+
+function todayIso() {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${now.getFullYear()}-${month}-${day}`;
+}
+
+function formatEur(amount) {
+  return new Intl.NumberFormat("lt-LT", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+function formatPower(device) {
+  if (device.power_kw != null) return device.power_kw;
+  if (device.power_kw_min != null && device.power_kw_max != null) {
+    return `${device.power_kw_min}–${device.power_kw_max}`;
+  }
+  return "–";
+}
 
 function HeatingAssistant() {
+  const devices = useMemo(
+    () =>
+      withPublicPrices(
+        [...catalog.premium, ...catalog.budget],
+        priceBook,
+        todayIso()
+      ),
+    []
+  );
   const [inputs, setInputs] = useState({
     houseType: "",
     area: "",
@@ -48,7 +82,7 @@ Prašau pateikti šildymo įrenginio pasiūlymą pagal šiuos kriterijus:
 - Nuosava elektrinė: ${inputs.ownPowerPlant ? "Yra" : "Nėra"}
 - Saulės baterijos: ${inputs.solarPanels ? "Yra" : "Nėra"}
 - Biudžetas: ${inputs.budget} €
-- Pageidaujami įrenginiai: ${filteredDevices.map((d) => d.brand).join(", ")}
+- Pageidaujami įrenginiai: ${filteredDevices.map((d) => `${d.brand} ${d.model}`).join(", ")}
 
 Ačiū.
     `.trim();
@@ -135,49 +169,94 @@ Ačiū.
         />
       </div>
       <h2 className="text-xl font-semibold mt-4 mb-2">Siūlomi įrenginiai</h2>
-      <div className="overflow-x-auto">
-        <table className="w-full border mb-2">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="p-2 border">Tipas</th>
-              <th className="p-2 border">Modelis</th>
-              <th className="p-2 border">Galia (kW)</th>
-              <th className="p-2 border">Kaina (€)</th>
-              <th className="p-2 border">Pardavėjai</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredDevices.length === 0 && (
-              <tr>
-                <td colSpan={5} className="text-center py-4 text-gray-400">
-                  Nėra tinkamų įrenginių pagal pasirinktus kriterijus.
-                </td>
-              </tr>
-            )}
-            {filteredDevices.map((d) => (
-              <tr key={d.id}>
-                <td className="border p-2">{d.type}</td>
-                <td className="border p-2">{d.brand}</td>
-                <td className="border p-2 text-center">{d.power_kw}</td>
-                <td className="border p-2 text-center">{d.price_eur}</td>
-                <td className="border p-2">
-                  {d.vendors.map((v, idx) => (
-                    <a
-                      href={v.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      key={idx}
-                      className="text-blue-600 underline mr-2"
-                    >
-                      {v.name}
-                    </a>
+      <p className="text-sm text-gray-600 mb-3">
+        Patikrinta kaina yra mažiausia vieša įrangos kaina su PVM, be montavimo.
+        Nuoroda veda į puslapį, kuriame ta kaina parašyta. Vidurkis skaičiuojamas
+        iš tų pačių patikrintų pasiūlymų. Kaina galioja {priceBook.valid_days} dienas
+        po patikrinimo. Praėjus savaitei ta pati eilutė lieka, bet žymima kaip
+        pasenusi, kol jos vietoje įrašoma nauja paieška.
+      </p>
+      {["premium", "budget"].map((tier) => {
+        const rows = filteredDevices.filter((device) => device.tier === tier);
+        const title =
+          tier === "premium"
+            ? "Mūsų rekomenduojami (Premium)"
+            : "Galimi pigesni (Budget)";
+        return (
+          <div key={tier} className="mb-4">
+            <h3 className="font-semibold mb-2">{title}</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full border mb-2">
+                <thead>
+                  <tr className="bg-gray-200">
+                    <th className="p-2 border">Tipas</th>
+                    <th className="p-2 border">Modelis</th>
+                    <th className="p-2 border">Galia (kW)</th>
+                    <th className="p-2 border">Kaina</th>
+                    <th className="p-2 border">Kur matyti kainą</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="text-center py-4 text-gray-400">
+                        Nėra tinkamų įrenginių pagal pasirinktus kriterijus.
+                      </td>
+                    </tr>
+                  )}
+                  {rows.map((d) => (
+                    <tr key={d.id}>
+                      <td className="border p-2">{d.type}</td>
+                      <td className="border p-2">
+                        <div>
+                          {d.brand} {d.model}
+                        </div>
+                        {d.sku && (
+                          <div className="text-xs text-gray-500">{d.sku}</div>
+                        )}
+                        {d.price_note && (
+                          <div className="text-xs text-gray-500 mt-1">{d.price_note}</div>
+                        )}
+                      </td>
+                      <td className="border p-2 text-center">{formatPower(d)}</td>
+                      <td className="border p-2 text-center">
+                        <div>{formatEur(d.price_eur)}</div>
+                        {d.price_verified ? (
+                          <>
+                            <div className="text-xs text-gray-500">
+                              vidurkis {formatEur(d.price_average_eur)} iš {d.price_offer_count}
+                            </div>
+                            <div className={d.price_current ? "text-xs text-gray-500" : "text-xs text-amber-700"}>
+                              {d.price_current
+                                ? `galioja iki ${d.price_valid_until}`
+                                : `pasenusi nuo ${d.price_valid_until}`}
+                            </div>
+                          </>
+                        ) : (
+                          <div className="text-xs text-gray-400">nepatikrinta</div>
+                        )}
+                      </td>
+                      <td className="border p-2">
+                        {d.vendors.map((v, idx) => (
+                          <a
+                            href={v.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            key={idx}
+                            className="text-blue-600 underline mr-2"
+                          >
+                            {d.price_verified ? `Mažiausia: ${v.name}` : v.name}
+                          </a>
+                        ))}
+                      </td>
+                    </tr>
                   ))}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      })}
       <button
         onClick={handleSendProposal}
         className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-2xl shadow-lg mb-6"
