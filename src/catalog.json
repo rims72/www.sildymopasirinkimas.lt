@@ -324,6 +324,125 @@
           "email": "sales@jusuimone.lt"
         }
       ]
+    },
+    {
+      "id": "hp-alsavo-10",
+      "tier": "premium",
+      "type": "Oras–vanduo šilumos siurblys",
+      "brand": "Alsavo",
+      "model": "ASW 10 kW",
+      "fuel": "heatpump",
+      "power_kw": 10,
+      "price_eur": 3350,
+      "dhw": "atskiras",
+      "solar_compatible": true,
+      "refrigerant": "R32",
+      "cop": 4.3,
+      "scop": 4.2,
+      "min_temp": -20,
+      "sound_db": 55,
+      "notes": "Prioritetinis siurblys. Biudžetinė klasė su bazinėmis funkcijomis.",
+      "vendors": [
+        {
+          "name": "Jūsų Įmonė",
+          "url": "https://jusuimone.lt/alsavo-10",
+          "email": "sales@jusuimone.lt"
+        }
+      ]
+    },
+    {
+      "id": "el-protherm-14",
+      "tier": "premium",
+      "type": "Elektrinis katilas",
+      "brand": "Protherm",
+      "model": "Ray 14 kW",
+      "fuel": "electric",
+      "power_kw": 14,
+      "price_eur": 880,
+      "dhw": "none",
+      "solar_compatible": true,
+      "refrigerant": null,
+      "cop": null,
+      "scop": null,
+      "min_temp": null,
+      "sound_db": null,
+      "notes": "Paprasta schema su PV; nėra COP/SCOP (tiesioginė elektra).",
+      "vendors": [
+        {
+          "name": "Jūsų Įmonė",
+          "url": "https://jusuimone.lt/protherm-ray14",
+          "email": "sales@jusuimone.lt"
+        }
+      ]
+    },
+    {
+      "id": "gas-bosch-20",
+      "tier": "premium",
+      "type": "Kondensacinis dujinis katilas",
+      "brand": "Bosch",
+      "model": "Condens 2300iW 20 kW",
+      "fuel": "gas",
+      "power_kw": 20,
+      "price_eur": 1590,
+      "dhw": "atskiras",
+      "solar_compatible": true,
+      "refrigerant": null,
+      "cop": null,
+      "scop": null,
+      "min_temp": null,
+      "sound_db": null,
+      "notes": "Platus servisas; gera moduliacija nuo ~3 kW.",
+      "vendors": [
+        {
+          "name": "Jūsų Įmonė",
+          "url": "https://jusuimone.lt/bosch-2300iw-20",
+          "email": "sales@jusuimone.lt"
+        }
+      ]
+    },
+    {
+      "id": "gas-buderus-24",
+      "tier": "premium",
+      "type": "Kondensacinis dujinis katilas",
+      "brand": "Buderus",
+      "model": "GB122 24 kW",
+      "fuel": "gas",
+      "power_kw": 24,
+      "price_eur": 1690,
+      "dhw": "atskiras",
+      "solar_compatible": true,
+      "refrigerant": null,
+      "cop": null,
+      "scop": null,
+      "min_temp": null,
+      "sound_db": null,
+      "notes": "Ekonomiškas kondensacinis katilas; lengva priežiūra.",
+      "vendors": [
+        {
+          "name": "Jūsų Įmonė",
+          "url": "https://jusuimone.lt/gb122-24",
+          "email": "sales@jusuimone.lt"
+        }
+      ]
+    },
+    {
+      "id": "gas-protherm-25",
+      "tier": "premium",
+      "type": "Kondensacinis dujinis katilas",
+      "brand": "Protherm",
+      "model": "Panther Condens 25KKO",
+      "fuel": "gas",
+      "power_kw": 24.7,
+      "price_eur": null,
+      "dhw": "atskiras",
+      "solar_compatible": true,
+      "refrigerant": null,
+      "cop": null,
+      "scop": null,
+      "min_temp": null,
+      "sound_db": 51,
+      "notes": "Prioritetinis. Šildymas ir karštas vanduo atskirame šildytuve.",
+      "vendors": []
     }
   ],
   "budget": [
@@ -478,31 +597,6 @@
       ]
     },
     {
-      "id": "hp-alsavo-10",
-      "tier": "budget",
-      "type": "Oras–vanduo šilumos siurblys",
-      "brand": "Alsavo",
-      "model": "ASW 10 kW",
-      "fuel": "heatpump",
-      "power_kw": 10,
-      "price_eur": 3350,
-      "dhw": "atskiras",
-      "solar_compatible": true,
-      "refrigerant": "R32",
-      "cop": 4.3,
-      "scop": 4.2,
-      "min_temp": -20,
-      "sound_db": 55,
-      "notes": "Biudžetinė klasė su bazinėmis funkcijomis.",
-      "vendors": [
-        {
-          "name": "Jūsų Įmonė",
-          "url": "https://jusuimone.lt/alsavo-10",
-          "email": "sales@jusuimone.lt"
-        }
-      ]
-    },
-    {
       "id": "hp-heiko-8",
       "tier": "budget",
       "type": "Oras–vanduo šilumos siurblys",
@@ -578,31 +672,6 @@
       ]
     },
     {
-      "id": "el-protherm-14",
-      "tier": "budget",
-      "type": "Elektrinis katilas",
-      "brand": "Protherm",
-      "model": "Ray 14 kW",
-      "fuel": "electric",
-      "power_kw": 14,
-      "price_eur": 880,
-      "dhw": "none",
-      "solar_compatible": true,
-      "refrigerant": null,
-      "cop": null,
-      "scop": null,
-      "min_temp": null,
-      "sound_db": null,
-      "notes": "Paprasta schema su PV; nėra COP/SCOP (tiesioginė elektra).",
-      "vendors": [
-        {
-          "name": "Jūsų Įmonė",
-          "url": "https://jusuimone.lt/protherm-ray14",
-          "email": "sales@jusuimone.lt"
-        }
-      ]
-    },
-    {
       "id": "gas-viessmann-19",
       "tier": "budget",
       "type": "Kondensacinis dujinis katilas",
@@ -623,56 +692,6 @@
         {
           "name": "Jūsų Įmonė",
           "url": "https://jusuimone.lt/vitodens-050w-19",
-          "email": "sales@jusuimone.lt"
-        }
-      ]
-    },
-    {
-      "id": "gas-bosch-20",
-      "tier": "budget",
-      "type": "Kondensacinis dujinis katilas",
-      "brand": "Bosch",
-      "model": "Condens 2300iW 20 kW",
-      "fuel": "gas",
-      "power_kw": 20,
-      "price_eur": 1590,
-      "dhw": "atskiras",
-      "solar_compatible": true,
-      "refrigerant": null,
-      "cop": null,
-      "scop": null,
-      "min_temp": null,
-      "sound_db": null,
-      "notes": "Platus servisas; gera moduliacija nuo ~3 kW.",
-      "vendors": [
-        {
-          "name": "Jūsų Įmonė",
-          "url": "https://jusuimone.lt/bosch-2300iw-20",
-          "email": "sales@jusuimone.lt"
-        }
-      ]
-    },
-    {
-      "id": "gas-buderus-24",
-      "tier": "budget",
-      "type": "Kondensacinis dujinis katilas",
-      "brand": "Buderus",
-      "model": "GB122 24 kW",
-      "fuel": "gas",
-      "power_kw": 24,
-      "price_eur": 1690,
-      "dhw": "atskiras",
-      "solar_compatible": true,
-      "refrigerant": null,
-      "cop": null,
-      "scop": null,
-      "min_temp": null,
-      "sound_db": null,
-      "notes": "Ekonomiškas kondensacinis katilas; lengva priežiūra.",
-      "vendors": [
-        {
-          "name": "Jūsų Įmonė",
-          "url": "https://jusuimone.lt/gb122-24",
           "email": "sales@jusuimone.lt"
         }
       ]

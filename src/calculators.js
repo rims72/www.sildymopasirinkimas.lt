@@ -598,7 +598,7 @@ export const CALCULATORS = [
   {
     id: "sildymo-kaina",
     name: "Šildymo kaina",
-    description: "Dujų, suskystintų dujų balionų, monobloko, split ir elektrinio katilo metinė sąskaita.",
+    description: "Dujų, suskystintų dujų, šilumos siurblio prie žiemos COP ir elektros metinė sąskaita.",
     fields: [
       number("area", "Plotas, m²", 120, { min: 40, max: 400, step: 10 }),
       choice("energyClass", "Energijos klasė", [["A++", "A++ · 27,8"], ["A+", "A+ · 37,1"], ["A", "A · 49,2"], ["B", "B · 125,4"], ["old", "Senas · 196"]], "A+"),
@@ -606,8 +606,8 @@ export const CALCULATORS = [
       number("indoor", "Vidaus temperatūra, °C", 20, { min: 16, max: 26, step: 1 }),
       number("gasPrice", "Dujų kaina, €/m³", 1, { min: 0.2, max: 3, step: 0.05 }),
       number("electricPrice", "Elektros kaina, €/kWh", 0.2, { min: 0.05, max: 1, step: 0.01 }),
-      number("scopMono", "Monobloko SCOP", 4, { min: 1, max: 6, step: 0.1 }),
-      number("scopSplit", "Split SCOP", 4, { min: 1, max: 6, step: 0.1 }),
+      number("scopFloor", "COP grindims", 2.3, { min: 1, max: 6, step: 0.1 }),
+      number("scopRad", "COP radiatoriams", 2, { min: 1, max: 6, step: 0.1 }),
       choice("lpgKg", "SND balionas", [["11", "11 kg (27 l)"], ["19", "19 kg (46 l)"], ["21", "21 kg (50 l)"], ["33", "33 kg (79 l)"]], "11"),
       number("lpgPrice", "Vieno baliono kaina, €", LPG.priceEur, { min: 1, max: 400, step: 0.01 }),
     ],
@@ -865,8 +865,8 @@ export function computeCalculator(id, raw = {}) {
       });
       const gasPrice = num(values.gasPrice, 1);
       const electric = num(values.electricPrice, 0.2);
-      const mono = num(values.scopMono, 4);
-      const split = num(values.scopSplit, 4);
+      const floorCop = num(values.scopFloor, 2.3);
+      const radCop = num(values.scopRad, 2);
       const total = season.heatRaw + season.dhwRaw;
       const lpgKg = num(values.lpgKg, LPG.cylinderKg);
       const lpgPrice = num(values.lpgPrice, LPG.priceEur);
@@ -874,11 +874,14 @@ export function computeCalculator(id, raw = {}) {
       const rows = [
         { id: "gas", name: "Dujos", quantity: `${season.gasM3Year} m³`, eur: (total / (GAS_KWH * GAS_EFFICIENCY)) * gasPrice },
         { id: "lpg", name: `SND ${lpgKg} kg`, quantity: `${Math.round(lpg.kg)} kg · ${lpg.cylindersToBuy} bal.`, eur: lpg.eur },
-        { id: "mono", name: `Mono ${fmt(mono, 1)}`, quantity: `${Math.round(total / mono)} kWh`, eur: (total / mono) * electric },
-        { id: "split", name: `Split ${fmt(split, 1)}`, quantity: `${Math.round(total / split)} kWh`, eur: (total / split) * electric },
+        { id: "floor", name: `Grindys ${fmt(floorCop, 1)}`, quantity: `${Math.round(total / floorCop)} kWh`, eur: (total / floorCop) * electric },
+        { id: "rad", name: `Radiatoriai ${fmt(radCop, 1)}`, quantity: `${Math.round(total / radCop)} kWh`, eur: (total / radCop) * electric },
         { id: "electric", name: "Elektra", quantity: `${Math.round(total)} kWh`, eur: total * electric },
       ];
       const warned = lpgKg !== LPG.cylinderKg && Math.abs(lpgPrice - LPG.priceEur) < 0.001;
+      const method = warned
+        ? `Įrašyta ${fmt(LPG.priceEur, 2)} € yra ${LPG.cylinderKg} kg baliono kaina. Pasirinktam balionui įrašykite jo kainą. Kitų dydžių kainų čia nėra.`
+        : "Šildymas — klasė × plotas, prie kitokios temperatūros dauginama iš Vilniaus dienolaipsnių. Karštas vanduo — 40 l ir 51 kWh/m³. SND — 12,8 kWh/kg ir naudingumas 0,95. Baliono depozitas ir pristatymas neįskaičiuoti.";
       return {
         headlineLabel: "Pigiausia per metus",
         headline: `${Math.round(Math.min(...rows.map((row) => row.eur)))} €`,
@@ -888,9 +891,7 @@ export function computeCalculator(id, raw = {}) {
         heat: season.heatRaw,
         dhw: season.dhwRaw,
         link: { href: LPG.url, label: `${LPG.shop}: ${LPG.product}` },
-        note: warned
-          ? `Įrašyta ${fmt(LPG.priceEur, 2)} € yra ${LPG.cylinderKg} kg baliono kaina. Pasirinktam balionui įrašykite jo kainą. Kitų dydžių kainų čia nėra.`
-          : "Tas pats šilumos kiekis. Šildymas — klasė × plotas, prie kitokios temperatūros dauginama iš Vilniaus dienolaipsnių. Karštas vanduo — 40 l ir 51 kWh/m³. SND — 12,8 kWh/kg ir naudingumas 0,95. Baliono depozitas ir pristatymas neįskaičiuoti.",
+        note: `Vidutinė Lietuvos žiema yra apie −3…−5 °C, priklausomai nuo vietovės. Prie tokios lauko temperatūros šilumos siurblio COP būna apie 2,3, o su radiatoriais apie 2. Kataloginio SCOP 4 imti nereikia: tai švelnių sąlygų maksimumas. Dujinis katilas kainuoja apie 1–1,5 tūkst. €, siurblys — kelis tūkstančius, todėl įrengti dujas dažniau apsimoka. ${method}`,
       };
     }
     case "suskystintos-dujos": {

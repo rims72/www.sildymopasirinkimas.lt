@@ -102,6 +102,12 @@ test("prices the other checked devices from the same quote list", () => {
   expect(priced.find((device) => device.id === "gas-buderus-24").price_eur).toBe(1308);
   expect(priced.find((device) => device.id === "gas-buderus-24").model).toBe("Logamax plus GB122i-15K");
   expect(priced.find((device) => device.id === "gas-bosch-20").price_eur).toBe(1233);
+  expect(priced.find((device) => device.id === "gas-bosch-20").price_offer_count).toBe(2);
+  expect(priced.find((device) => device.id === "gas-buderus-24").price_offer_count).toBe(3);
+  expect(priced.find((device) => device.id === "gas-protherm-25").price_eur).toBe(1244);
+  expect(priced.find((device) => device.id === "gas-protherm-25").vendors[0].name).toBe("Aqua Jazz");
+  expect(catalog.premium.some((device) => device.id === "hp-alsavo-10")).toBe(true);
+  expect(catalog.premium.some((device) => device.id === "el-protherm-14")).toBe(true);
   expect(priced.find((device) => device.id === "hp-haier-10").price_eur).toBe(7200);
   expect(priced.find((device) => device.id === "hp-midea-12").price_eur).toBe(3742);
   expect(priced.find((device) => device.id === "hp-viessmann-100s-8").price_verified).toBe(false);

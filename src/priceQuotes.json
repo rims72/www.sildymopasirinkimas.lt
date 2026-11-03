@@ -364,13 +364,18 @@
       "sku": "GC2300iW 24P",
       "power_kw": 24,
       "dhw": "atskiras",
-      "note": "20 kW Condens 2300iW viešai neparduodamas. Šildymui, karštas vanduo atskirame šildytuve, galia 3,1–25,2 kW.",
+      "note": "20 kW Condens 2300iW viešai neparduodamas. Šildymui, karštas vanduo atskirame šildytuve, galia 3,1–25,2 kW. Tvarus katilas skelbia 1 314,45 €.",
       "checked_on": "2026-11-03",
       "offers": [
         {
           "shop": "Visi katilai",
           "url": "https://visikatilai.lt/kondensaciniai-su-galimybe-pajungti-turini-vandens-sildytuva/junkers/junkers-bosch-gc2300iw-24p",
           "price_eur": 1233
+        },
+        {
+          "shop": "Tvarus katilas",
+          "url": "https://www.tvaruskatilas.lt/bosch/dujinis-kondensacinis-katilas-bosch-condens-2300iw-24p.html",
+          "price_eur": 1314.45
         }
       ]
     },
@@ -379,13 +384,38 @@
       "sku": "7736901622",
       "power_kw": 16.2,
       "dhw": "momentinis",
-      "note": "GB122 24 kW viešai nėra. Parduodamas GB122i-15K, maks. 16,2 kW, momentinis karštas vanduo. Parduotuvės kaina 1 307,54 €, čia suapvalinta iki euro.",
+      "note": "GB122 24 kW viešai nėra. Parduodamas GB122i-15K, kodas 7736901622, momentinis karštas vanduo. Katilų turgus 1 307,54 €, Tvarus katilas 1 309,60 €, Aqua Jazz 1 310 €.",
       "checked_on": "2026-11-03",
       "offers": [
         {
           "shop": "Katilų turgus",
           "url": "https://www.katiluturgus.lt/dujinis-katilas-buderus-logamax-plus-gb122i-15k",
           "price_eur": 1308
+        },
+        {
+          "shop": "Tvarus katilas",
+          "url": "https://www.tvaruskatilas.lt/buderus/dujinis-kondensacinis-katilas-buderus-logamax-plus-gb122i.html",
+          "price_eur": 1309.6
+        },
+        {
+          "shop": "Aqua Jazz",
+          "url": "https://www.e-aquajazz.lt/dujinis-kondensacinis-katilas-logamax-plus-gb122i-15k",
+          "price_eur": 1310
+        }
+      ]
+    },
+    "gas-protherm-25": {
+      "model": "Panther Condens 25KKO",
+      "sku": "0010025160",
+      "power_kw": 24.7,
+      "dhw": "atskiras",
+      "note": "Šildymas 3–24,7 kW (80/60 °C), karštas vanduo atskiroje talpoje. Aqua Jazz akcijinė kaina 1 244 €, vietoje 1 798 €.",
+      "checked_on": "2026-11-03",
+      "offers": [
+        {
+          "shop": "Aqua Jazz",
+          "url": "https://www.e-aquajazz.lt/dujinis-kondensacinis-katilas-protherm-panther-condens-25-kko",
+          "price_eur": 1244
         }
       ]
     }

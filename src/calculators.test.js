@@ -45,6 +45,10 @@ test("propane cylinders use 12.8 kWh/kg and the opened 11 kg price", () => {
   const lpg = year.bills.find((row) => row.id === "lpg");
   expect(lpg.name).toBe("SND 11 kg");
   expect(Math.round(lpg.eur)).toBe(1613);
+  expect(year.bills.find((row) => row.id === "floor").name).toBe("Grindys 2,3");
+  expect(year.bills.find((row) => row.id === "rad").name).toBe("Radiatoriai 2,0");
+  expect(year.note).toContain("−3…−5 °C");
+  expect(year.note).toContain("apie 2");
 
   const dedicated = computeCalculator("suskystintos-dujos");
   expect(dedicated.headline).toBe("1613 €");

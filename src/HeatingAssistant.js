@@ -86,9 +86,7 @@ export default function HeatingAssistant() {
   });
   const [sortBy, setSortBy] = useState("best"); // best | price_asc | price_desc | power_asc | power_desc
   const [chatInput, setChatInput] = useState("");
-  const [chatMessages, setChatMessages] = useState([
-    { sender: "AI", text: "Sveiki! Užduokite bet kokį klausimą apie šildymą." },
-  ]);
+  const [chatMessages, setChatMessages] = useState([]);
   const [showBetterOffer, setShowBetterOffer] = useState(false);
   const [ignoreStrictFilters, setIgnoreStrictFilters] = useState(false); // diagnostikai
 
@@ -275,27 +273,31 @@ export default function HeatingAssistant() {
     setShowBetterOffer(false);
   }
 
-  /** — Chat dėžutė — */
+  /** — Užklausa mums — */
   function handleChatSend() {
     const q = chatInput.trim();
     if (!q) return;
-    setChatMessages((p) => [...p, { sender: "Jūs", text: q }]);
-    const low = q.toLowerCase();
-    let a = "Ačiū! Užpildykite laukus viršuje – lentelė atsinaujins. Tiksliems skaičiavimams reikalingas detalus šilumos nuostolių skaičiavimas.";
-    if (low.includes("kiek kw") || low.includes("koks galingumas")) {
-      a = `Apytikslis poreikis: ~${requiredKw} kW pagal jūsų plotą ir izoliaciją.`;
-    } else if (low.includes("dujos")) {
-      a = inputs.gasAvailable === "Taip"
-        ? "Turint dujų įvadą, tinka kondensaciniai dujiniai katilai (Vitodens, Bosch, Buderus)."
-        : showGasNearby
-        ? "Dujų įvado nėra. Jei trasa šalia – jungtis galima; kitu atveju – granulės ar šilumos siurblys."
-        : "Dujų įvado nėra. Svarstykite granules, kietą kurą arba šilumos siurblį.";
-    } else if (low.includes("saul")) {
-      a = inputs.solarPanels
-        ? "Turint saulės modulius, šilumos siurblys ar elektrinis katilas tampa patrauklesni."
-        : "Be saulės modulių šilumos siurblys vis tiek efektyvus, bet elektros kaina reikšminga.";
+    if (!inputs.email) {
+      alert("Įrašykite savo el. paštą viršuje, kad galėtume atsakyti.");
+      return;
     }
-    setChatMessages((p) => [...p, { sender: "AI", text: a }]);
+    const body = [
+      "Sveiki,",
+      "",
+      "Klausimas:",
+      q,
+      "",
+      ...objectSummaryLines(),
+      "",
+      "Prašau atsakyti, ką siūlote.",
+      "",
+      "Ačiū!",
+    ];
+    openMailTo(COMPANY_EMAIL, "Klausimas apie katilą – Šildymo pasirinkimas", body);
+    setChatMessages((p) => [...p, {
+      sender: "Užklausa",
+      text: `Laiškas paruoštas adresu ${COMPANY_EMAIL}. Jei pašto programa neatsidarė, nusiųskite tą patį klausimą šiuo adresu.`,
+    }]);
     setChatInput("");
   }
 
@@ -439,25 +441,32 @@ export default function HeatingAssistant() {
           </div>
 
           <p className="text-sm text-slate-500 mt-3">
-            Premium gamintojus rekomenduojame dėl efektyvumo (SCOP), darbo prie šalčio (min. darbinė temperatūra), patikimumo ir serviso.
-            Pigesni variantai galimi, jei biudžetas ribotas.
+            Prioritetiniai: Alsavo, Protherm, Bosch ir Buderus. Juos rodome tarp rekomenduojamų.
+            Kiti gamintojai lieka, kai tinka pagal galią ir biudžetą.
           </p>
         </section>
 
-        {/* AI dėžutė */}
         <section className="bg-white rounded-2xl shadow-sm border p-4 md:p-6">
-          <h2 className="text-lg font-medium mb-3">AI pokalbių dėžutė</h2>
-          <div className="h-44 overflow-y-auto border rounded-lg p-3 bg-slate-50">
-            {chatMessages.map((msg, idx) => (
-              <div key={idx} className="mb-1">
-                <strong className={msg.sender === "AI" ? "text-slate-600" : "text-slate-900"}>{msg.sender}:</strong> {msg.text}
-              </div>
-            ))}
-          </div>
-          <div className="mt-2 flex gap-2">
-            <input className="flex-1 border rounded-lg p-2" placeholder="Jūsų klausimas apie šildymą…" value={chatInput}
-                   onChange={(e) => setChatInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleChatSend()} />
-            <button onClick={handleChatSend} className="rounded-xl bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 font-medium">Siųsti</button>
+          <h2 className="text-lg font-medium mb-2">Klauskite katilo kainos</h2>
+          <p className="text-sm text-slate-600 mb-3">
+            Parašykite modelį ar ko ieškote. Užklausa ateina mums į {COMPANY_EMAIL}, atsakome, ką siūlome.
+            Viršuje įrašykite savo el. paštą.
+          </p>
+          {chatMessages.length > 0 && (
+            <div className="mb-3 border rounded-lg p-3 bg-slate-50 text-sm text-slate-700">
+              {chatMessages[chatMessages.length - 1].text}
+            </div>
+          )}
+          <div className="flex flex-col md:flex-row gap-2">
+            <textarea
+              className="flex-1 border rounded-lg p-2 min-h-[5rem]"
+              placeholder="Pvz. kiek kainuoja Bosch Condens 2300iW ir ar galite pasiūlyti su montavimu?"
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+            />
+            <button onClick={handleChatSend} className="rounded-xl bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 font-medium">
+              Siųsti užklausą
+            </button>
           </div>
         </section>
       </main>
