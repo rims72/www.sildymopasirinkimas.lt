@@ -1,5 +1,5 @@
 {
-  "checked_on": "2026-11-01",
+  "checked_on": "2026-11-03",
   "market": "LT",
   "includes_vat": true,
   "includes_installation": false,
@@ -284,6 +284,108 @@
           "shop": "Visi katilai",
           "url": "https://visikatilai.lt/mini-bio/kostrzewa/mini-bio-20-kw",
           "price_eur": 3820
+        }
+      ]
+    },
+    "hp-mitsu-85": {
+      "model": "Ecodan 8,5 kW",
+      "sku": "EHPX-YM9D / PUZ-WM85YAA",
+      "note": "Paketas be boilerio, 400 V. Tik įranga, su PVM.",
+      "checked_on": "2026-11-03",
+      "offers": [
+        {
+          "shop": "Oro meistras",
+          "url": "https://oromeistras.lt/mitsubishi-oras-vanduo/8575-kw-mitsubishi-electric-package-iki-20c-silumos-siurblys-oras-vanduo-be-boilerio-ehpx-ym9d-puz-wm85yaa.html",
+          "price_eur": 7020
+        }
+      ]
+    },
+    "hp-midea-12": {
+      "model": "M-Thermal Arctic 12,1 kW",
+      "sku": "M-Thermal Arctic 12,1/12,0 kW",
+      "note": "Be integruoto boilerio. Parduotuvės kaina 3 741,50 €, čia suapvalinta iki euro.",
+      "checked_on": "2026-11-03",
+      "offers": [
+        {
+          "shop": "Šildymo sprendimai",
+          "url": "https://store.sisprendimai.lt/pagrindinis/36-midea-m-thermal-arctic-12-kw-121-kw-silumos-siurblys-oras-vanduo.html",
+          "price_eur": 3742
+        }
+      ]
+    },
+    "hp-haier-10": {
+      "model": "Super Aqua Split 10 kW",
+      "sku": "AW102SNCHA / HU102WAMNA",
+      "note": "Kataloge buvo SuperMatch. Parduotuvėje tai Super Aqua Split 10 kW, kaina su PVM.",
+      "checked_on": "2026-11-03",
+      "offers": [
+        {
+          "shop": "Ecoakadis",
+          "url": "https://www.ecoakadis.lt/eshop/silumos_siurbliai_oras-vanduo",
+          "price_eur": 7200
+        }
+      ]
+    },
+    "hp-nordis-10": {
+      "model": "Optimus Pro Split 10 kW",
+      "sku": "HOP10WODU / HOP100WIDU",
+      "note": "Alpha linijos viešos kainos nėra. Tai dabartinis 10 kW vienfazis split be boilerio.",
+      "checked_on": "2026-11-03",
+      "offers": [
+        {
+          "shop": "Airsystems",
+          "url": "https://www.airsystems.lt/products/nordis-optimus-pro-split-10-00-10-00-kw-bb",
+          "price_eur": 3429
+        },
+        {
+          "shop": "Oro meistras",
+          "url": "https://oromeistras.lt/nordis-oras-vanduo/10-kw-nordis-optimus-pro-split-oras-vanduo-%C5%A1ilumos-siurblys-hop100widuhop10wodu.html",
+          "price_eur": 4184
+        }
+      ]
+    },
+    "hp-alsavo-10": {
+      "model": "HEAT 10i9",
+      "sku": "HEAT 10i9",
+      "refrigerant": "R290",
+      "power_kw": 10.3,
+      "note": "Kataloge buvo ASW 10 kW R32. Parduotuvėje 10 kW monoblokas yra HEAT 10i9, R290, nominali galia 10,30 kW prie +7 °C. Kaina su PVM.",
+      "checked_on": "2026-11-03",
+      "offers": [
+        {
+          "shop": "Dujų darbai",
+          "url": "https://dujudarbai.lt/produktas/alsavo-10-kw-r290-silumos-siurblys/",
+          "price_eur": 3399
+        }
+      ]
+    },
+    "gas-bosch-20": {
+      "model": "Condens 2300iW 24P",
+      "sku": "GC2300iW 24P",
+      "power_kw": 24,
+      "dhw": "atskiras",
+      "note": "20 kW Condens 2300iW viešai neparduodamas. Šildymui, karštas vanduo atskirame šildytuve, galia 3,1–25,2 kW.",
+      "checked_on": "2026-11-03",
+      "offers": [
+        {
+          "shop": "Visi katilai",
+          "url": "https://visikatilai.lt/kondensaciniai-su-galimybe-pajungti-turini-vandens-sildytuva/junkers/junkers-bosch-gc2300iw-24p",
+          "price_eur": 1233
+        }
+      ]
+    },
+    "gas-buderus-24": {
+      "model": "Logamax plus GB122i-15K",
+      "sku": "7736901622",
+      "power_kw": 16.2,
+      "dhw": "momentinis",
+      "note": "GB122 24 kW viešai nėra. Parduodamas GB122i-15K, maks. 16,2 kW, momentinis karštas vanduo. Parduotuvės kaina 1 307,54 €, čia suapvalinta iki euro.",
+      "checked_on": "2026-11-03",
+      "offers": [
+        {
+          "shop": "Katilų turgus",
+          "url": "https://www.katiluturgus.lt/dujinis-katilas-buderus-logamax-plus-gb122i-15k",
+          "price_eur": 1308
         }
       ]
     }

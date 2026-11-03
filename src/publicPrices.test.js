@@ -44,12 +44,12 @@ test("prices the 9 kW and the real 12 kW T-CAP sku", () => {
 });
 
 test("leaves a device without a public quote unverified", () => {
-  const mitsubishi = applyPublicPrice(
-    devices.find((device) => device.id === "hp-mitsu-85"),
+  const heiko = applyPublicPrice(
+    devices.find((device) => device.id === "hp-heiko-8"),
     priceBook
   );
-  expect(mitsubishi.price_verified).toBe(false);
-  expect(mitsubishi.price_eur).toBe(5900);
+  expect(heiko.price_verified).toBe(false);
+  expect(heiko.price_eur).toBe(3050);
 });
 
 test("average rounds half up to the nearest euro", () => {
@@ -93,5 +93,18 @@ test("prices the other checked devices from the same quote list", () => {
   expect(priced.find((device) => device.id === "hp-daikin-8").price_eur).toBe(5587);
   expect(priced.find((device) => device.id === "hp-midea-8").price_eur).toBe(3759);
   expect(priced.find((device) => device.id === "pellet-kostrzewa-24").price_average_eur).toBe(3805);
-  expect(priced.find((device) => device.id === "hp-mitsu-85").price_verified).toBe(false);
+  expect(priced.find((device) => device.id === "hp-heiko-8").price_verified).toBe(false);
+  expect(priced.find((device) => device.id === "hp-mitsu-85").price_eur).toBe(7020);
+  expect(priced.find((device) => device.id === "hp-nordis-10").price_eur).toBe(3429);
+  expect(priced.find((device) => device.id === "hp-nordis-10").price_average_eur).toBe(3807);
+  expect(priced.find((device) => device.id === "hp-alsavo-10").price_eur).toBe(3399);
+  expect(priced.find((device) => device.id === "hp-alsavo-10").refrigerant).toBe("R290");
+  expect(priced.find((device) => device.id === "gas-buderus-24").price_eur).toBe(1308);
+  expect(priced.find((device) => device.id === "gas-buderus-24").model).toBe("Logamax plus GB122i-15K");
+  expect(priced.find((device) => device.id === "gas-bosch-20").price_eur).toBe(1233);
+  expect(priced.find((device) => device.id === "hp-haier-10").price_eur).toBe(7200);
+  expect(priced.find((device) => device.id === "hp-midea-12").price_eur).toBe(3742);
+  expect(priced.find((device) => device.id === "hp-viessmann-100s-8").price_verified).toBe(false);
+  expect(priced.find((device) => device.id === "hp-bosch-7000i-7").price_verified).toBe(false);
+  expect(priced.find((device) => device.id === "hp-ariston-8").price_verified).toBe(false);
 });
