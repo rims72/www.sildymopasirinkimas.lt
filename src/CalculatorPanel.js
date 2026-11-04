@@ -107,7 +107,7 @@ function Field({ field, value, material, onChange }) {
         max={field.max}
         step={field.step}
         value={value}
-        onChange={(event) => onChange(Number(event.target.value))}
+        onChange={(event) => onChange(event.target.value === "" ? "" : Number(event.target.value))}
       />
     </label>
   );

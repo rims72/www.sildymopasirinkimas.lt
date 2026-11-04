@@ -478,6 +478,7 @@ export function sizeGasPipe({ powerKw, lengthM, fittings, appliances }) {
 }
 
 function num(value, fallback) {
+  if (value === "" || value == null) return fallback;
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
 }

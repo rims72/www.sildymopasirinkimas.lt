@@ -44,7 +44,8 @@ const COMPANY_EMAIL = "info@sildymopasirinkimas.lt";
 
 /** === PAGALBINĖS FUNKCIJOS === */
 function estimateRequiredKw(area, insulation) {
-  const A = Number(area) || 0;
+  const A = Number(area);
+  if (!Number.isFinite(A) || A <= 0) return 0;
   const coef = {
     "Labai gera (A+/A)": 0.045,
     "Vidutinė (B/C)": 0.06,
@@ -123,8 +124,11 @@ export default function HeatingAssistant() {
     if (inputs.dhwType) {
       list = list.map((d) => {
         let dhwNote = "";
-        if (inputs.dhwType === "Integruotas boileris" && d.dhw !== "integruotas") {
+        if (inputs.dhwType === "Integruotas boileris" && d.dhw !== "integruotas" && d.dhw !== "momentinis") {
           dhwNote = "Reikės atskiro boilerio";
+        }
+        if (inputs.dhwType === "Integruotas boileris" && d.dhw === "momentinis") {
+          dhwNote = "Karštas vanduo ruošiamas momentiniu būdu";
         }
         if (inputs.dhwType === "Nereikia" && d.dhw !== "none") {
           dhwNote = "Boilerį galima nenaudoti / atjungti";
@@ -149,7 +153,8 @@ export default function HeatingAssistant() {
 
         if (d.fuel === "gas") {
           const assumedMin = Math.max(3, Math.round((pmin ?? 0) || (pmax ? pmax * 0.2 : 3)));
-          return assumedMin <= need * 1.2; // svarbi apatinė riba
+          const high = pmax ?? 0;
+          return assumedMin <= need * 1.2 && high >= need * 0.7;
         }
 
         const low = pmin ?? (pmax ?? 0);
@@ -296,9 +301,8 @@ export default function HeatingAssistant() {
     openMailTo(COMPANY_EMAIL, "Klausimas apie katilą – Šildymo pasirinkimas", body);
     setChatMessages((p) => [...p, {
       sender: "Užklausa",
-      text: `Laiškas paruoštas adresu ${COMPANY_EMAIL}. Jei pašto programa neatsidarė, nusiųskite tą patį klausimą šiuo adresu.`,
+      text: `Laiškas paruoštas adresu ${COMPANY_EMAIL}. Klausimas paliktas laukelyje, jei pašto programa neatsidarė.`,
     }]);
-    setChatInput("");
   }
 
   /** — UI — */
