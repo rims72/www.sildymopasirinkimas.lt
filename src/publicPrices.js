@@ -47,6 +47,9 @@ export function applyPublicPrice(device, priceBook, today) {
     price_valid_until: status.valid_until,
     price_current: status.current,
     price_verified: true,
+    power_kw: entry.power_kw != null ? entry.power_kw : device.power_kw,
+    dhw: entry.dhw || device.dhw,
+    refrigerant: entry.refrigerant || device.refrigerant,
     vendors: [
       {
         name: lowest.shop,
