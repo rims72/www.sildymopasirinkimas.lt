@@ -58,6 +58,17 @@ test("propane cylinders use 12.8 kWh/kg and the opened 11 kg price", () => {
   expect(dedicated.link.href).toContain("prekiutinklas.lt");
 });
 
+test("system fluid adds 600 m of 16 mm pipe and glycol for a monoblock", () => {
+  const fluid = computeCalculator("skyscio-kiekis");
+  expect(fluid.rows.find((row) => row[0] === "Grindų vamzdžiai")[1]).toBe("67,9 l · 600 m");
+  expect(fluid.rows.find((row) => row[0] === "Iš viso")[1]).toBe("74,9 l");
+  expect(fluid.headline).toBe("24,7 l glikolio");
+  const split = computeCalculator("skyscio-kiekis", { layout: "split" });
+  expect(split.headline).toMatch(/l indas$/);
+  expect(split.rows.find((row) => row[0] === "Glikolis")[1]).toBe("0 l");
+  expect(split.note).toContain("Split");
+});
+
 test("every Hidraulika calculator plus propane is on the page list", () => {
   expect(CALCULATORS.map((item) => item.id)).toEqual([
     "silumos-poreikis",
@@ -66,6 +77,7 @@ test("every Hidraulika calculator plus propane is on the page list", () => {
     "vamzdzio-nuostoliai",
     "grindiniai-konturai",
     "isspletimo-indas",
+    "skyscio-kiekis",
     "boilerio-isspletimo-indas",
     "boilerio-talpa",
     "duju-suvartojimas",
