@@ -362,6 +362,12 @@ function pipeWaterLitres(innerMm, lengthM) {
   return Math.PI * radius * radius * Math.max(0, lengthM) * 1000;
 }
 
+const GLYCOL_SHARE = { "-10": 0.25, "-15": 0.33, "-20": 0.40, "-25": 0.45 };
+
+function round1(value) {
+  return Math.round(value * 10) / 10;
+}
+
 export function lmtd(supplyC, returnC, airC = ROOM_AIR) {
   const inlet = supplyC - airC;
   const outlet = returnC - airC;
@@ -566,6 +572,27 @@ export const CALCULATORS = [
       choice("pipeDn", "Magistralės DN", [["16", "DN16"], ["20", "DN20"], ["25", "DN25"], ["32", "DN32"]], "20", (v) => v.heating === "radiators"),
       choice("source", "Šaltinis", [["split", "Šilumos siurblys"], ["gas_boiler", "Dujinis katilas"]], "split"),
       number("knownL", "Žinomas sistemos tūris, l (0 = skaičiuoti)", 0, { min: 0, max: 1200, step: 20 }),
+    ],
+  },
+  {
+    id: "skyscio-kiekis",
+    name: "Sistemos skystis",
+    description: "Kiek litrų telpa grindyse, siurblyje ir talpoje, ir kiek glikolio reikia monoblokui.",
+    fields: [
+      choice("layout", "Sistema", [["mono", "Monoblokas"], ["split", "Split"]], "mono"),
+      choice("floorMm", "Grindų vamzdis", [["16", "16 mm"], ["18", "18 mm"]], "16"),
+      number("floorM", "Grindų vamzdžio ilgis, m", 600, { min: 0, max: 3000, step: 10 }),
+      choice("mainDn", "Magistralė", [["0", "Nėra"], ["20", "20 mm"], ["25", "25 mm"], ["32", "32 mm"]], "0"),
+      number("mainM", "Magistralės ilgis, m", 0, { min: 0, max: 200, step: 5, show: (v) => v.mainDn !== "0" }),
+      number("hpL", "Siurblio vandens tūris, l", 5, { min: 0, max: 30, step: 0.5 }),
+      number("bufferL", "Akumuliacinė talpa, l", 0, { min: 0, max: 2000, step: 10 }),
+      number("extraL", "Kolektoriai ir kita, l", 2, { min: 0, max: 50, step: 1 }),
+      choice("freeze", "Neužšalti iki", [
+        ["-10", "−10 °C · apie 25 %"],
+        ["-15", "−15 °C · apie 33 %"],
+        ["-20", "−20 °C · apie 40 %"],
+        ["-25", "−25 °C · apie 45 %"],
+      ], "-15", (v) => v.layout === "mono"),
     ],
   },
   {
@@ -830,6 +857,48 @@ export function computeCalculator(id, raw = {}) {
         ["Išsiplėtimas", `${fmt(vessel.percent, 2)} %`],
         ["Skaičiuotinas tūris", `${fmt(vessel.exactL, 1)} l`],
       ], "Karštas vanduo atskiras nuo šildymo. Pripildymas 15 °C, maksimumas 60 °C, vožtuvas 6 bar, p0 3,5 bar.");
+    }
+    case "skyscio-kiekis": {
+      const floorInner = num(values.floorMm, 16) === 18 ? 14 : 12;
+      const floorL = pipeWaterLitres(floorInner, num(values.floorM, 0));
+      const mainInner = DN_INNER[num(values.mainDn, 0)] || 0;
+      const mainL = values.mainDn === "0" ? 0 : pipeWaterLitres(mainInner, num(values.mainM, 0));
+      const hpL = Math.max(0, num(values.hpL, 0));
+      const bufferL = Math.max(0, num(values.bufferL, 0));
+      const extraL = Math.max(0, num(values.extraL, 0));
+      const total = floorL + mainL + hpL + bufferL + extraL;
+      const mono = values.layout !== "split";
+      const share = mono ? (GLYCOL_SHARE[String(values.freeze)] ?? 0.33) : 0;
+      const glycol = total * share;
+      const vessel = expansionVessel({
+        systemL: total,
+        fillC: 15,
+        maxC: 40,
+        p0Bar: 1,
+        safetyValveBar: 3,
+        kind: "heating",
+      });
+      const rows = [
+        ["Grindų vamzdžiai", `${fmt(round1(floorL), 1)} l · ${fmt(num(values.floorM, 0), 0)} m`],
+        ["Magistralė", `${fmt(round1(mainL), 1)} l`],
+        ["Siurblys", `${fmt(round1(hpL), 1)} l`],
+        ["Akumuliacinė talpa", `${fmt(round1(bufferL), 1)} l`],
+        ["Kolektoriai ir kita", `${fmt(round1(extraL), 1)} l`],
+        ["Iš viso", `${fmt(round1(total), 1)} l`],
+        ["Glikolis", mono ? `${fmt(round1(glycol), 1)} l · ${Math.round(share * 100)} %` : "0 l"],
+        ["Vanduo mišinyje", `${fmt(round1(total - glycol), 1)} l`],
+        ["Išsiplėtimo indas", `${vessel.sizeL} l`],
+      ];
+      const note = mono
+        ? "16 mm vamzdžio vidus 12 mm, 18 mm — 14 mm. Glikolio dalis apytikslė monopropilenglikoliui, kad mišinys neužšaltų iki pasirinktos temperatūros. Monobloko lauko kontūrą juo ir reikia užpildyti. Indo dydis — tas pats vandens skaičius kaip „Išsiplėtimo indas“: pripildymas 15 °C, maksimumas 40 °C."
+        : "Split sistemoje šildymo vanduo lieka patalpoje, todėl glikolio paprastai nereikia. Skaičius rodo išsiplėtimo indą tam tūriui. Indo metodas tas pats kaip „Išsiplėtimo indas“: pripildymas 15 °C, maksimumas 40 °C.";
+      return result(
+        mono ? "Glikolio reikia" : "Išsiplėtimo indas",
+        mono ? `${fmt(round1(glycol), 1)} l glikolio` : `${vessel.sizeL} l indas`,
+        mono ? glycol : vessel.sizeL,
+        rows,
+        note,
+      );
     }
     case "boilerio-talpa": {
       const tank = pickTank(num(values.occupants, 4), values.source === "gas_boiler" ? "gas_boiler" : "heat_pump");

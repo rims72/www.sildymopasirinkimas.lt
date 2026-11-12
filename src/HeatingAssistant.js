@@ -90,6 +90,8 @@ export default function HeatingAssistant() {
   const [chatMessages, setChatMessages] = useState([]);
   const [showBetterOffer, setShowBetterOffer] = useState(false);
   const [ignoreStrictFilters, setIgnoreStrictFilters] = useState(false); // diagnostikai
+  const [showDevices, setShowDevices] = useState(false);
+  const [fuelFilter, setFuelFilter] = useState("all");
 
   const showGasNearby = inputs.gasAvailable === "Ne";
   const budgetNum = useMemo(() => {
@@ -306,24 +308,64 @@ export default function HeatingAssistant() {
   }
 
   /** — UI — */
+  const byFuel = (list) => (fuelFilter === "all" ? list : list.filter((item) => item.fuel === fuelFilter));
+  const fuels = [
+    ["all", "Visi"],
+    ["heatpump", "Šilumos siurbliai"],
+    ["gas", "Dujiniai katilai"],
+    ["electric", "Elektriniai"],
+    ["pellet", "Granuliniai"],
+  ];
+
+  function openFuel(next) {
+    setFuelFilter(next);
+    setShowDevices(true);
+  }
+
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="bg-white/70 backdrop-blur sticky top-0 z-10 border-b">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-xl md:text-2xl font-semibold tracking-tight">Šildymo įrenginių parinkimo asistentas</h1>
-          <div className="flex flex-col items-end gap-1 text-right">
-            <div className="text-sm text-slate-500">Minimalus • Profesionalus • Aiškus</div>
-            <a className="text-sm font-medium text-sky-700 underline" href="./Hidraulika-1.0.0.apk" download>
-              Atsisiųsti Hidrauliką (Android)
-            </a>
+    <div className="min-h-screen bg-[#f6f3ee] text-[#1c3d36]">
+      <header className="bg-[#1c3d36] text-[#f6f3ee] sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-[#e7c3a8]">Šildymo pasirinkimas</p>
+            <h1 className="text-xl md:text-2xl font-semibold tracking-tight">Skaičiuoklės ir šildymo įrenginiai</h1>
           </div>
+          <a className="shrink-0 text-sm font-medium rounded-full bg-[#c46b2d] text-white px-4 py-2" href="./Hidraulika-1.0.0.apk" download>
+            Hidraulika Android
+          </a>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 py-6">
+      <main className="max-w-6xl mx-auto px-4 py-8">
         <Calculators />
+        <section className="mb-8">
+          <p className="text-xs uppercase tracking-[0.18em] text-[#8a5a32]">Katalogas</p>
+          <h2 className="text-2xl font-semibold mt-1">Parinkti šildymo įrenginį</h2>
+          <p className="text-sm text-[#5c675f] mt-2 max-w-2xl">
+            Sąrašas neatsidaro pats. Pasirinkite rūšį — tada matysite tik tuos katilus ir siurblius, kurie tinka namui.
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-5">
+            {fuels.filter(([id]) => id !== "all").map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => openFuel(id)}
+                className={showDevices && fuelFilter === id
+                  ? "rounded-2xl border border-[#1c3d36] bg-[#1c3d36] text-[#f6f3ee] p-4 text-left"
+                  : "rounded-2xl border border-[#e4ddd2] bg-white p-4 text-left hover:border-[#c46b2d]"}
+              >
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f6f3ee]">
+                  <FuelMark id={id} />
+                </span>
+                <span className="block mt-3 font-medium">{label}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+        {showDevices && (
+        <>
         {/* FORMA */}
-        <section className="bg-white rounded-2xl shadow-sm border p-4 md:p-6 mb-6">
+        <section className="bg-white rounded-3xl shadow-sm border border-[#e4ddd2] p-4 md:p-6 mb-6">
           <h2 className="text-lg font-medium mb-4">Objekto parametrai</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Field label="Pastato tipas">
@@ -384,9 +426,10 @@ export default function HeatingAssistant() {
         </section>
 
         {/* VALDIKLIAI + LENTELĖS */}
-        <section className="bg-white rounded-2xl shadow-sm border p-4 md:p-6 mb-4">
+        <section className="bg-white rounded-3xl shadow-sm border border-[#e4ddd2] p-4 md:p-6 mb-4">
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <h2 className="text-lg font-medium">Siūlomi įrenginiai</h2>
+            <button type="button" className="text-sm underline text-[#8a5a32]" onClick={() => setShowDevices(false)}>Slėpti sąrašą</button>
             <div className="flex items-center gap-3">
               <label className="text-sm text-slate-600">Rūšiuoti pagal:</label>
               <select className="border rounded-lg p-2" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
@@ -402,19 +445,38 @@ export default function HeatingAssistant() {
               </label>
             </div>
           </div>
+          <div className="flex flex-wrap gap-2 mt-4">
+            {fuels.map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                aria-pressed={fuelFilter === id}
+                onClick={() => setFuelFilter(id)}
+                className={fuelFilter === id
+                  ? "px-3 py-1.5 rounded-full text-sm bg-[#c46b2d] text-white"
+                  : "px-3 py-1.5 rounded-full text-sm border border-[#e4ddd2] bg-[#fbf8f3]"}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {fuelFilter === "gas" && inputs.gasAvailable !== "Taip" && !inputs.gasLineNearby && (
+            <p className="text-sm text-[#8a5a32] mt-3">Dujiniai katilai atsiranda, kai pažymite, kad dujų įvadas yra arba trasa šalia.</p>
+          )}
 
           {/* Bendras arba Premium/Budget išdėstymas */}
-          {!hasTiers && <DeviceTable list={commonList} />}
+          {!hasTiers && <DeviceTable list={byFuel(commonList)} />}
           {hasTiers && (
             <>
-              {(budgetNum ? budgetNum >= PREMIUM_MIN_BUDGET : true) && (
+              {(budgetNum ? budgetNum >= PREMIUM_MIN_BUDGET : true) && byFuel(premiumList).length > 0 && (
                 <>
                   <h3 className="text-base font-medium mt-4 mb-2">Mūsų rekomenduojami (Premium)</h3>
-                  <DeviceTable list={premiumList} />
-                  {budgetList.length > 0 && (
+                  <DeviceTable list={byFuel(premiumList)} />
+                  {byFuel(budgetList).length > 0 && (
                     <>
                       <h3 className="text-base font-medium mt-6 mb-2">Galimi pigesni (Budget)</h3>
-                      <DeviceTable list={budgetList} />
+                      <DeviceTable list={byFuel(budgetList)} />
                     </>
                   )}
                 </>
@@ -422,11 +484,11 @@ export default function HeatingAssistant() {
               {budgetNum && budgetNum < PREMIUM_MIN_BUDGET && (
                 <>
                   <h3 className="text-base font-medium mt-4 mb-2">Galimi pigesni (Budget)</h3>
-                  <DeviceTable list={budgetList} />
-                  {premiumList.length > 0 && (
+                  <DeviceTable list={byFuel(budgetList)} />
+                  {byFuel(premiumList).length > 0 && (
                     <>
                       <h3 className="text-base font-medium mt-6 mb-2">Mūsų rekomenduojami (Premium)</h3>
-                      <DeviceTable list={premiumList} />
+                      <DeviceTable list={byFuel(premiumList)} />
                     </>
                   )}
                 </>
@@ -436,7 +498,7 @@ export default function HeatingAssistant() {
 
           {/* Veiksmai */}
           <div className="mt-4 flex flex-col md:flex-row gap-3">
-            <button onClick={handleGetQuote} className="inline-flex items-center justify-center rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 font-medium shadow">
+            <button onClick={handleGetQuote} className="inline-flex items-center justify-center rounded-xl bg-[#1c3d36] hover:bg-[#142e29] text-white px-4 py-2 font-medium shadow">
               Gauti pasiūlymą
             </button>
             <button onClick={() => setShowBetterOffer(true)} className="inline-flex items-center justify-center rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 px-4 py-2 font-medium border border-amber-200">
@@ -449,13 +511,18 @@ export default function HeatingAssistant() {
             Kiti gamintojai lieka, kai tinka pagal galią ir biudžetą.
           </p>
         </section>
+        </>
+        )}
 
-        <section className="bg-white rounded-2xl shadow-sm border p-4 md:p-6">
+        <section className="bg-white rounded-3xl shadow-sm border border-[#e4ddd2] p-4 md:p-6">
           <h2 className="text-lg font-medium mb-2">Klauskite katilo kainos</h2>
-          <p className="text-sm text-slate-600 mb-3">
+          <p className="text-sm text-[#5c675f] mb-3">
             Parašykite modelį ar ko ieškote. Užklausa ateina mums į {COMPANY_EMAIL}, atsakome, ką siūlome.
-            Viršuje įrašykite savo el. paštą.
           </p>
+          <label className="block text-sm mb-3">
+            Jūsų el. paštas
+            <input name="email" className="border border-[#e4ddd2] rounded-lg w-full p-2 mt-1" type="email" placeholder="vardas@pastas.lt" value={inputs.email} onChange={handleInputChange}/>
+          </label>
           {chatMessages.length > 0 && (
             <div className="mb-3 border rounded-lg p-3 bg-slate-50 text-sm text-slate-700">
               {chatMessages[chatMessages.length - 1].text}
@@ -468,14 +535,14 @@ export default function HeatingAssistant() {
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
             />
-            <button onClick={handleChatSend} className="rounded-xl bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 font-medium">
+            <button onClick={handleChatSend} className="rounded-xl bg-[#c46b2d] hover:bg-[#a85622] text-white px-4 py-2 font-medium">
               Siųsti užklausą
             </button>
           </div>
         </section>
       </main>
 
-      <footer className="py-8 text-center text-xs text-slate-400">
+      <footer className="py-8 text-center text-xs text-[#8a918c]">
         © {new Date().getFullYear()} Šildymo pasirinkimas · <a className="underline" href={`mailto:${COMPANY_EMAIL}`}>{COMPANY_EMAIL}</a>
       </footer>
 
@@ -508,6 +575,42 @@ export default function HeatingAssistant() {
 }
 
 /** — Maži UI helperiai — */
+function FuelMark({ id }) {
+  const common = "h-8 w-8";
+  if (id === "gas") {
+    return (
+      <svg className={common} viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M9 23c0-5 7-7 7-13 3.5 3.5 7 5.5 7 11a7 7 0 1 1-14 2z" fill="#c46b2d" />
+      </svg>
+    );
+  }
+  if (id === "electric") {
+    return (
+      <svg className={common} viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M18 3 8 18h7l-1 11 11-16h-8l1-10z" fill="#1c3d36" />
+      </svg>
+    );
+  }
+  if (id === "pellet") {
+    return (
+      <svg className={common} viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="8" y="8" width="16" height="18" rx="2" fill="#8a5a32" />
+        <circle cx="13" cy="15" r="1.4" fill="#f6f3ee" />
+        <circle cx="18" cy="18" r="1.4" fill="#f6f3ee" />
+        <circle cx="14" cy="22" r="1.4" fill="#f6f3ee" />
+      </svg>
+    );
+  }
+  return (
+    <svg className={common} viewBox="0 0 32 32" aria-hidden="true">
+      <rect x="3" y="11" width="15" height="13" rx="2" fill="#1c3d36" />
+      <rect x="19" y="14" width="10" height="7" rx="1.5" fill="#c46b2d" />
+      <path d="M7 11V7h7v4" fill="none" stroke="#8a5a32" strokeWidth="1.6" />
+      <circle cx="8.5" cy="17.5" r="1.7" fill="#f6f3ee" />
+    </svg>
+  );
+}
+
 function Field({ label, children }) {
   return (
     <div>
