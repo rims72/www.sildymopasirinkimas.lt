@@ -634,8 +634,8 @@ export const CALCULATORS = [
       number("indoor", "Vidaus temperatūra, °C", 20, { min: 16, max: 26, step: 1 }),
       number("gasPrice", "Dujų kaina, €/m³", 1, { min: 0.2, max: 3, step: 0.05 }),
       number("electricPrice", "Elektros kaina, €/kWh", 0.2, { min: 0.05, max: 1, step: 0.01 }),
-      number("scopFloor", "COP grindims", 2.3, { min: 1, max: 6, step: 0.1 }),
-      number("scopRad", "COP radiatoriams", 2, { min: 1, max: 6, step: 0.1 }),
+      number("scopFloor", "COP grindims (rekomenduojamas 2,3)", 2.3, { min: 1, max: 6, step: 0.1 }),
+      number("scopRad", "COP radiatoriams (rekomenduojamas 2,0)", 2, { min: 1, max: 6, step: 0.1 }),
       choice("lpgKg", "SND balionas", [["11", "11 kg (27 l)"], ["19", "19 kg (46 l)"], ["21", "21 kg (50 l)"], ["33", "33 kg (79 l)"]], "11"),
       number("lpgPrice", "Vieno baliono kaina, €", LPG.priceEur, { min: 1, max: 400, step: 0.01 }),
     ],
@@ -944,9 +944,25 @@ export function computeCalculator(id, raw = {}) {
       const rows = [
         { id: "gas", name: "Dujos", quantity: `${season.gasM3Year} m³`, eur: (total / (GAS_KWH * GAS_EFFICIENCY)) * gasPrice },
         { id: "lpg", name: `SND ${lpgKg} kg`, quantity: `${Math.round(lpg.kg)} kg · ${lpg.cylindersToBuy} bal.`, eur: lpg.eur },
-        { id: "floor", name: `Grindys ${fmt(floorCop, 1)}`, quantity: `${Math.round(total / floorCop)} kWh`, eur: (total / floorCop) * electric },
-        { id: "rad", name: `Radiatoriai ${fmt(radCop, 1)}`, quantity: `${Math.round(total / radCop)} kWh`, eur: (total / radCop) * electric },
-        { id: "electric", name: "Elektra", quantity: `${Math.round(total)} kWh`, eur: total * electric },
+        {
+          id: "floor",
+          name: "Elektros kaina, šilumos siurblys (grindinis šildymas)",
+          hint: Math.abs(floorCop - 2.3) < 0.051
+            ? "Rekomenduojamas COP 2,3"
+            : `Skaičiuojama su COP ${fmt(floorCop, 1)}. Rekomenduojamas COP 2,3`,
+          quantity: `${Math.round(total / floorCop)} kWh`,
+          eur: (total / floorCop) * electric,
+        },
+        {
+          id: "rad",
+          name: "Elektros kaina, šilumos siurblys (radiatoriai)",
+          hint: Math.abs(radCop - 2) < 0.051
+            ? "Rekomenduojamas COP 2,0"
+            : `Skaičiuojama su COP ${fmt(radCop, 1)}. Rekomenduojamas COP 2,0`,
+          quantity: `${Math.round(total / radCop)} kWh`,
+          eur: (total / radCop) * electric,
+        },
+        { id: "electric", name: "Elektra", hint: "Tiesioginė elektra, be šilumos siurblio", quantity: `${Math.round(total)} kWh`, eur: total * electric },
       ];
       const warned = lpgKg !== LPG.cylinderKg && Math.abs(lpgPrice - LPG.priceEur) < 0.001;
       const method = warned
@@ -961,7 +977,7 @@ export function computeCalculator(id, raw = {}) {
         heat: season.heatRaw,
         dhw: season.dhwRaw,
         link: { href: LPG.url, label: `${LPG.shop}: ${LPG.product}` },
-        note: `Vidutinė Lietuvos žiema yra apie −3…−5 °C, priklausomai nuo vietovės. Prie tokios lauko temperatūros šilumos siurblio COP būna apie 2,3, o su radiatoriais apie 2. Kataloginio SCOP 4 imti nereikia: tai švelnių sąlygų maksimumas. Dujinis katilas kainuoja apie 1–1,5 tūkst. €, siurblys — kelis tūkstančius, todėl įrengti dujas dažniau apsimoka. ${method}`,
+        note: `Vidutinė Lietuvos žiema yra apie −3…−5 °C, priklausomai nuo vietovės. Prie tokios lauko temperatūros rekomenduojamas šilumos siurblio COP yra 2,3 grindiniam šildymui ir 2,0 radiatoriams. Kataloginio SCOP 4 imti nereikia: tai švelnių sąlygų maksimumas. ${method}`,
       };
     }
     case "suskystintos-dujos": {

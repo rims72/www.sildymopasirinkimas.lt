@@ -90,7 +90,8 @@ export default function HeatingAssistant() {
   const [chatMessages, setChatMessages] = useState([]);
   const [showBetterOffer, setShowBetterOffer] = useState(false);
   const [ignoreStrictFilters, setIgnoreStrictFilters] = useState(false); // diagnostikai
-  const [showDevices, setShowDevices] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [showList, setShowList] = useState(false);
   const [fuelFilter, setFuelFilter] = useState("all");
 
   const showGasNearby = inputs.gasAvailable === "Ne";
@@ -110,6 +111,7 @@ export default function HeatingAssistant() {
     // 1) Kuras / dujos
     list = list.filter((d) => {
       if (d.fuel === "gas") {
+        if (fuelFilter === "gas") return true;
         if (inputs.gasAvailable === "Taip") return true;
         if (inputs.gasAvailable === "Ne" && inputs.gasLineNearby) return true;
         return false;
@@ -193,7 +195,7 @@ export default function HeatingAssistant() {
     return list;
   }, [
     devices, inputs.gasAvailable, inputs.gasLineNearby, inputs.solarPanels,
-    inputs.dhwType, requiredKw, budgetNum, sortBy, ignoreStrictFilters
+    inputs.dhwType, requiredKw, budgetNum, sortBy, ignoreStrictFilters, fuelFilter
   ]);
 
   // Tiers
@@ -317,9 +319,19 @@ export default function HeatingAssistant() {
     ["pellet", "Granuliniai"],
   ];
 
+  const canPick = String(inputs.area).trim() !== "" && inputs.insulation !== "";
+  const listVisible = showForm && showList && canPick;
+  const fuelLabel = fuels.find(([id]) => id === fuelFilter)?.[1] || "Įrenginiai";
+
   function openFuel(next) {
     setFuelFilter(next);
-    setShowDevices(true);
+    setShowForm(true);
+    if (!canPick) setShowList(false);
+  }
+
+  function revealDevices() {
+    if (!canPick) return;
+    setShowList(true);
   }
 
   return (
@@ -342,7 +354,7 @@ export default function HeatingAssistant() {
           <p className="text-xs uppercase tracking-[0.18em] text-[#8a5a32]">Katalogas</p>
           <h2 className="text-2xl font-semibold mt-1">Parinkti šildymo įrenginį</h2>
           <p className="text-sm text-[#5c675f] mt-2 max-w-2xl">
-            Sąrašas neatsidaro pats. Pasirinkite rūšį — tada matysite tik tuos katilus ir siurblius, kurie tinka namui.
+            Pirmiausia pasirinkite rūšį ir įrašykite namo duomenis. Įrenginius parodysime pagal plotą ir apšiltinimą.
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-5">
             {fuels.filter(([id]) => id !== "all").map(([id, label]) => (
@@ -350,7 +362,7 @@ export default function HeatingAssistant() {
                 key={id}
                 type="button"
                 onClick={() => openFuel(id)}
-                className={showDevices && fuelFilter === id
+                className={showForm && fuelFilter === id
                   ? "rounded-2xl border border-[#1c3d36] bg-[#1c3d36] text-[#f6f3ee] p-4 text-left"
                   : "rounded-2xl border border-[#e4ddd2] bg-white p-4 text-left hover:border-[#c46b2d]"}
               >
@@ -358,15 +370,23 @@ export default function HeatingAssistant() {
                   <FuelMark id={id} />
                 </span>
                 <span className="block mt-3 font-medium">{label}</span>
+                {id === "heatpump" ? (
+                  <span className={showForm && fuelFilter === id ? "block text-sm mt-1 text-[#e7c3a8]" : "block text-sm mt-1 text-[#8a5a32]"}>
+                    Galime pasiūlyti pigiau
+                  </span>
+                ) : null}
               </button>
             ))}
           </div>
         </section>
-        {showDevices && (
+        {showForm && (
         <>
         {/* FORMA */}
         <section className="bg-white rounded-3xl shadow-sm border border-[#e4ddd2] p-4 md:p-6 mb-6">
-          <h2 className="text-lg font-medium mb-4">Objekto parametrai</h2>
+          <h2 className="text-lg font-medium mb-1">Namo duomenys</h2>
+          <p className="text-sm text-[#5c675f] mb-4">
+            Įrašykite plotą ir apšiltinimą. {fuelLabel} parodysime tik po to, pagal šiuos skaičius.
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Field label="Pastato tipas">
               <select name="buildingType" className="border rounded-lg w-full p-2" value={inputs.buildingType} onChange={handleInputChange}>
@@ -423,13 +443,31 @@ export default function HeatingAssistant() {
               <input name="email" className="border rounded-lg w-full p-2" type="email" placeholder="vardas@pastas.lt" value={inputs.email} onChange={handleInputChange}/>
             </Field>
           </div>
+          <div className="mt-5 flex flex-col sm:flex-row sm:items-center gap-3">
+            <button
+              type="button"
+              onClick={revealDevices}
+              disabled={!canPick}
+              className={canPick
+                ? "rounded-xl bg-[#c46b2d] text-white px-4 py-2 font-medium"
+                : "rounded-xl bg-[#e4ddd2] text-[#6d756f] px-4 py-2 font-medium cursor-not-allowed"}
+            >
+              Parinkti įrenginius
+            </button>
+            {!canPick ? <p className="text-sm text-[#8a5a32]">Reikia ploto ir apšiltinimo.</p> : null}
+          </div>
         </section>
 
-        {/* VALDIKLIAI + LENTELĖS */}
+        {listVisible && (
         <section className="bg-white rounded-3xl shadow-sm border border-[#e4ddd2] p-4 md:p-6 mb-4">
           <div className="flex items-center justify-between gap-4 flex-wrap">
-            <h2 className="text-lg font-medium">Siūlomi įrenginiai</h2>
-            <button type="button" className="text-sm underline text-[#8a5a32]" onClick={() => setShowDevices(false)}>Slėpti sąrašą</button>
+            <div>
+              <h2 className="text-lg font-medium">Siūlomi įrenginiai</h2>
+              <p className="text-sm text-[#5c675f]">
+                {inputs.area} m², {inputs.insulation.toLowerCase()}: apie {requiredKw} kW. Rodoma: {fuelLabel.toLowerCase()}.
+              </p>
+            </div>
+            <button type="button" className="text-sm underline text-[#8a5a32]" onClick={() => setShowList(false)}>Slėpti sąrašą</button>
             <div className="flex items-center gap-3">
               <label className="text-sm text-slate-600">Rūšiuoti pagal:</label>
               <select className="border rounded-lg p-2" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
@@ -461,8 +499,8 @@ export default function HeatingAssistant() {
             ))}
           </div>
 
-          {fuelFilter === "gas" && inputs.gasAvailable !== "Taip" && !inputs.gasLineNearby && (
-            <p className="text-sm text-[#8a5a32] mt-3">Dujiniai katilai atsiranda, kai pažymite, kad dujų įvadas yra arba trasa šalia.</p>
+          {fuelFilter === "heatpump" && (
+            <p className="text-sm text-[#8a5a32] mt-3">Šilumos siurblius galime pasiūlyti pigiau nei vieša lentelės kaina. Parašykite mums, kokio namo ir modelio ieškote.</p>
           )}
 
           {/* Bendras arba Premium/Budget išdėstymas */}
@@ -511,6 +549,7 @@ export default function HeatingAssistant() {
             Kiti gamintojai lieka, kai tinka pagal galią ir biudžetą.
           </p>
         </section>
+        )}
         </>
         )}
 

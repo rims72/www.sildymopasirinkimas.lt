@@ -221,20 +221,23 @@ function Bills({ result }) {
         Šildymas {Math.round(result.heat)} kWh · karštas vanduo {Math.round(result.dhw)} kWh.
         Pigiausia {money(result.numeric)} per metus.
       </p>
-      <div className="space-y-2">
+      <div className="space-y-4">
         {result.bills.map((row) => {
           const cheap = Math.round(row.eur) === Math.round(result.numeric);
           return (
-            <div key={row.id} className="grid grid-cols-[7.5rem_1fr_5.5rem] items-center gap-2 text-sm">
-              <span className={cheap ? "font-semibold text-slate-900" : "text-slate-700"}>{row.name}</span>
-              <div className="h-3 rounded bg-slate-100 overflow-hidden">
+            <div key={row.id} className="text-sm">
+              <div className="flex items-baseline justify-between gap-3">
+                <span className={cheap ? "font-semibold text-slate-900" : "text-slate-800"}>{row.name}</span>
+                <span className="shrink-0 tabular-nums">{money(row.eur)}</span>
+              </div>
+              {row.hint ? <p className="text-xs text-[#8a5a32]">{row.hint}</p> : null}
+              <div className="mt-1 h-2 rounded bg-[#f3efe8] overflow-hidden">
                 <div
                   className={cheap ? "h-full bg-[#c46b2d]" : "h-full bg-[#1c3d36]"}
                   style={{ width: `${Math.max(2, (row.eur / widest) * 100)}%` }}
                 />
               </div>
-              <span className="text-right tabular-nums">{money(row.eur)}</span>
-              <span className="col-start-2 text-xs text-slate-500">{row.quantity} per metus</span>
+              <p className="text-xs text-slate-500 mt-0.5">{row.quantity} per metus</p>
             </div>
           );
         })}
