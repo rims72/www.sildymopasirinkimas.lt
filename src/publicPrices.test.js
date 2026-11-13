@@ -106,6 +106,19 @@ test("prices the other checked devices from the same quote list", () => {
   expect(priced.find((device) => device.id === "gas-buderus-24").price_offer_count).toBe(3);
   expect(priced.find((device) => device.id === "gas-protherm-25").price_eur).toBe(1244);
   expect(priced.find((device) => device.id === "gas-protherm-25").vendors[0].name).toBe("Aqua Jazz");
+  expect(priced.find((device) => device.id === "gas-protherm-gepard-25").price_eur).toBe(1095);
+  expect(priced.find((device) => device.id === "gas-protherm-gepard-25").tier).toBe("premium");
+  expect(priced.find((device) => device.id === "gas-bugatti-25").price_eur).toBe(940);
+  expect(priced.find((device) => device.id === "gas-bugatti-25b").price_eur).toBe(920);
+  expect(priced.find((device) => device.id === "gas-bugatti-35").price_eur).toBe(990);
+  expect(priced.find((device) => device.id === "gas-bugatti-35b").price_eur).toBe(980);
+  expect(priced.find((device) => device.id === "gas-bugatti-42b").price_eur).toBe(1050);
+  expect(priced.find((device) => device.id === "gas-baxi-24").price_eur).toBe(1099);
+  expect(priced.find((device) => device.id === "gas-ariston-24").price_eur).toBe(1251);
+  expect(priced.find((device) => device.id === "gas-protherm-puma-24").price_eur).toBe(910);
+  ["gas-bugatti-25", "gas-baxi-24", "gas-ariston-24", "gas-protherm-puma-24"].forEach((id) => {
+    expect(catalog.budget.some((device) => device.id === id)).toBe(true);
+  });
   expect(catalog.premium.some((device) => device.id === "hp-alsavo-10")).toBe(true);
   expect(catalog.premium.some((device) => device.id === "el-protherm-14")).toBe(true);
   expect(priced.find((device) => device.id === "hp-haier-10").price_eur).toBe(7200);
