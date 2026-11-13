@@ -978,7 +978,10 @@ export function computeCalculator(id, raw = {}) {
       });
       const gasQuote = ignitisGasQuote(season.gasM3Year);
       const enteredGas = num(values.gasPrice, gasQuote.eurPerM3);
-      const useIgnitis = Math.abs(enteredGas - IGNITIS_GAS.plans[1].eurPerM3) < 0.0001;
+      const blank = values.gasPrice === "" || values.gasPrice == null;
+      const useIgnitis = blank
+        || Math.abs(enteredGas - IGNITIS_GAS.plans[1].eurPerM3) < 0.0001
+        || Math.abs(enteredGas - gasQuote.eurPerM3) < 0.0001;
       const gasEur = useIgnitis ? gasQuote.eur : season.gasM3Year * enteredGas;
       const electric = num(values.electricPrice, ELECTRICITY.eurPerKwh);
       const floorCop = num(values.scopFloor, 2.3);

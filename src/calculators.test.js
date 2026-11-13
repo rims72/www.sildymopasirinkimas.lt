@@ -66,6 +66,8 @@ test("propane cylinders use 12.8 kWh/kg and the opened 11 kg price", () => {
   expect(smallGas.name).toBe("Dujos, Ignitis Minimalus");
   expect(smallGas.hint).toContain("0,93");
   expect(smallGas.hint).toContain("1,17");
+  const clearedSmall = computeCalculator("sildymo-kaina", { area: 40, occupants: 1, energyClass: "A++", gasPrice: "" });
+  expect(clearedSmall.bills.find((row) => row.id === "gas").eur).toBeCloseTo(smallGas.eur, 5);
 
   const dedicated = computeCalculator("suskystintos-dujos");
   expect(dedicated.headline).toBe("1613 €");
