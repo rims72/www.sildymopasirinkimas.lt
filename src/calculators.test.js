@@ -46,15 +46,26 @@ test("propane cylinders use 12.8 kWh/kg and the opened 11 kg price", () => {
   expect(lpg.name).toBe("SND 11 kg");
   expect(Math.round(lpg.eur)).toBe(1613);
   expect(year.bills.find((row) => row.id === "floor").name).toBe("Elektros kaina, šilumos siurblys (grindinis šildymas)");
-  expect(year.bills.find((row) => row.id === "floor").hint).toBe("Rekomenduojamas COP 2,3");
+  expect(year.bills.find((row) => row.id === "floor").hint).toContain("Rekomenduojamas COP 2,3");
   expect(year.bills.find((row) => row.id === "rad").name).toBe("Elektros kaina, šilumos siurblys (radiatoriai)");
-  expect(year.bills.find((row) => row.id === "rad").hint).toBe("Rekomenduojamas COP 2,0");
+  expect(year.bills.find((row) => row.id === "rad").hint).toContain("Rekomenduojamas COP 2,0");
+  expect(year.bills.find((row) => row.id === "gas").name).toBe("Dujos, Ignitis Optimalus");
+  expect(year.bills.find((row) => row.id === "gas").eur).toBeCloseTo(823 * 0.69 + 3.99 * 12, 5);
+  expect(year.bills.find((row) => row.id === "electric").eur).toBeCloseTo((season.heatRaw + season.dhwRaw) * 0.307, 5);
+  expect(year.note).toContain("ignitis.lt");
+  expect(year.note).toContain("0,307");
   expect(year.note).toContain("−3…−5 °C");
   expect(year.note).toContain("2,3");
   expect(year.note).not.toContain("apsimoka");
   const cleared = computeCalculator("sildymo-kaina", { gasPrice: "", electricPrice: "", lpgPrice: "" });
   expect(Math.round(cleared.bills.find((row) => row.id === "gas").eur)).toBe(Math.round(year.bills.find((row) => row.id === "gas").eur));
   expect(Math.round(cleared.bills.find((row) => row.id === "lpg").eur)).toBe(1613);
+
+  const small = computeCalculator("sildymo-kaina", { area: 40, occupants: 1, energyClass: "A++" });
+  const smallGas = small.bills.find((row) => row.id === "gas");
+  expect(smallGas.name).toBe("Dujos, Ignitis Minimalus");
+  expect(smallGas.hint).toContain("0,93");
+  expect(smallGas.hint).toContain("1,17");
 
   const dedicated = computeCalculator("suskystintos-dujos");
   expect(dedicated.headline).toBe("1613 €");

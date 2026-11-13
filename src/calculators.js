@@ -172,6 +172,49 @@ export const LPG = {
   depositEur: 200,
 };
 
+/** Ignitis buitinės dujos, ignitis.lt/duju-kainos, atidaryta 2026-11-13. Su PVM, galioja 2026-07-01–2026-12-31. */
+export const IGNITIS_GAS = {
+  checkedOn: "2026-11-13",
+  validTo: "2026-12-31",
+  url: "https://ignitis.lt/duju-kainos",
+  plans: [
+    { name: "Minimalus", maxM3: 300, eurPerM3: 0.93, monthEur: 1.17 },
+    { name: "Optimalus", maxM3: 20000, eurPerM3: 0.69, monthEur: 3.99 },
+    { name: "Maksimalus", maxM3: Infinity, eurPerM3: 0.66, monthEur: 3.99 },
+  ],
+};
+
+/** Elektrum 12 mėn. fiksuota viena zona. LEA palyginimas 2026-11-10, galutinė kaina. Elektrum mėnesio mokesčio šiam planui netaiko. */
+export const ELECTRICITY = {
+  checkedOn: "2026-11-10",
+  supplier: "Elektrum",
+  plan: "12 mėn. fiksuota, viena laiko zona",
+  eurPerKwh: 0.307,
+  url: "https://www.ena.lt/Naujiena/neet-kainos-20261110/",
+  ignitisStandardEur: 0.24,
+  ignitisUrl: "https://ignitis.lt/elektros-kainos",
+};
+
+function electricSource(price) {
+  if (Math.abs(price - ELECTRICITY.eurPerKwh) < 0.0001) {
+    return `${ELECTRICITY.supplier}, ${fmt(price, 3)} €/kWh`;
+  }
+  if (Math.abs(price - ELECTRICITY.ignitisStandardEur) < 0.0001) {
+    return `Ignitis Standartinis, ${fmt(price, 3)} €/kWh, tik iki 1000 kWh per metus`;
+  }
+  return `Įrašyta ${fmt(price, 3)} €/kWh`;
+}
+
+export function ignitisGasQuote(m3Year) {
+  const volume = Math.max(0, m3Year);
+  const plan = IGNITIS_GAS.plans.find((item) => volume <= item.maxM3) || IGNITIS_GAS.plans[IGNITIS_GAS.plans.length - 1];
+  return {
+    ...plan,
+    fixedEur: plan.monthEur * 12,
+    eur: volume * plan.eurPerM3 + plan.monthEur * 12,
+  };
+}
+
 export function lpgBill(totalKwh, cylinderKg, priceEur) {
   const kg = Math.max(0, totalKwh) / (LPG.kwhPerKg * LPG.efficiency);
   const size = Math.max(1, cylinderKg);
@@ -632,8 +675,8 @@ export const CALCULATORS = [
       choice("energyClass", "Energijos klasė", [["A++", "A++ · 27,8"], ["A+", "A+ · 37,1"], ["A", "A · 49,2"], ["B", "B · 125,4"], ["old", "Senas · 196"]], "A+"),
       number("occupants", "Gyventojai", 4, { min: 1, max: 8, step: 1 }),
       number("indoor", "Vidaus temperatūra, °C", 20, { min: 16, max: 26, step: 1 }),
-      number("gasPrice", "Dujų kaina, €/m³", 1, { min: 0.2, max: 3, step: 0.05 }),
-      number("electricPrice", "Elektros kaina, €/kWh", 0.2, { min: 0.05, max: 1, step: 0.01 }),
+      number("gasPrice", "Dujų kaina, €/m³ (0,69 = Ignitis planas)", IGNITIS_GAS.plans[1].eurPerM3, { min: 0.2, max: 3, step: 0.01 }),
+      number("electricPrice", "Elektros kaina, €/kWh", ELECTRICITY.eurPerKwh, { min: 0.05, max: 1, step: 0.001 }),
       number("scopFloor", "COP grindims (rekomenduojamas 2,3)", 2.3, { min: 1, max: 6, step: 0.1 }),
       number("scopRad", "COP radiatoriams (rekomenduojamas 2,0)", 2, { min: 1, max: 6, step: 0.1 }),
       choice("lpgKg", "SND balionas", [["11", "11 kg (27 l)"], ["19", "19 kg (46 l)"], ["21", "21 kg (50 l)"], ["33", "33 kg (79 l)"]], "11"),
@@ -933,8 +976,11 @@ export function computeCalculator(id, raw = {}) {
         indoorC: num(values.indoor, 20),
         classKw: 12,
       });
-      const gasPrice = num(values.gasPrice, 1);
-      const electric = num(values.electricPrice, 0.2);
+      const gasQuote = ignitisGasQuote(season.gasM3Year);
+      const enteredGas = num(values.gasPrice, gasQuote.eurPerM3);
+      const useIgnitis = Math.abs(enteredGas - IGNITIS_GAS.plans[1].eurPerM3) < 0.0001;
+      const gasEur = useIgnitis ? gasQuote.eur : season.gasM3Year * enteredGas;
+      const electric = num(values.electricPrice, ELECTRICITY.eurPerKwh);
       const floorCop = num(values.scopFloor, 2.3);
       const radCop = num(values.scopRad, 2);
       const total = season.heatRaw + season.dhwRaw;
@@ -942,32 +988,36 @@ export function computeCalculator(id, raw = {}) {
       const lpgPrice = num(values.lpgPrice, LPG.priceEur);
       const lpg = lpgBill(total, lpgKg, lpgPrice);
       const rows = [
-        { id: "gas", name: "Dujos", quantity: `${season.gasM3Year} m³`, eur: (total / (GAS_KWH * GAS_EFFICIENCY)) * gasPrice },
+        {
+          id: "gas",
+          name: useIgnitis ? `Dujos, Ignitis ${gasQuote.name}` : "Dujos",
+          hint: useIgnitis
+            ? `${fmt(gasQuote.eurPerM3, 2)} €/m³ + ${fmt(gasQuote.monthEur, 2)} €/mėn., su PVM, iki ${IGNITIS_GAS.validTo}`
+            : "Įrašyta jūsų kaina už kubinį metrą, be Ignitis mėnesio mokesčio.",
+          quantity: `${season.gasM3Year} m³`,
+          eur: gasEur,
+        },
         { id: "lpg", name: `SND ${lpgKg} kg`, quantity: `${Math.round(lpg.kg)} kg · ${lpg.cylindersToBuy} bal.`, eur: lpg.eur },
         {
           id: "floor",
           name: "Elektros kaina, šilumos siurblys (grindinis šildymas)",
-          hint: Math.abs(floorCop - 2.3) < 0.051
-            ? "Rekomenduojamas COP 2,3"
-            : `Skaičiuojama su COP ${fmt(floorCop, 1)}. Rekomenduojamas COP 2,3`,
+          hint: `${Math.abs(floorCop - 2.3) < 0.051 ? "Rekomenduojamas COP 2,3" : `Skaičiuojama su COP ${fmt(floorCop, 1)}. Rekomenduojamas COP 2,3`}. ${electricSource(electric)}`,
           quantity: `${Math.round(total / floorCop)} kWh`,
           eur: (total / floorCop) * electric,
         },
         {
           id: "rad",
           name: "Elektros kaina, šilumos siurblys (radiatoriai)",
-          hint: Math.abs(radCop - 2) < 0.051
-            ? "Rekomenduojamas COP 2,0"
-            : `Skaičiuojama su COP ${fmt(radCop, 1)}. Rekomenduojamas COP 2,0`,
+          hint: `${Math.abs(radCop - 2) < 0.051 ? "Rekomenduojamas COP 2,0" : `Skaičiuojama su COP ${fmt(radCop, 1)}. Rekomenduojamas COP 2,0`}. ${electricSource(electric)}`,
           quantity: `${Math.round(total / radCop)} kWh`,
           eur: (total / radCop) * electric,
         },
-        { id: "electric", name: "Elektra", hint: "Tiesioginė elektra, be šilumos siurblio", quantity: `${Math.round(total)} kWh`, eur: total * electric },
+        { id: "electric", name: "Elektra", hint: `Tiesioginė elektra, be šilumos siurblio. ${electricSource(electric)}`, quantity: `${Math.round(total)} kWh`, eur: total * electric },
       ];
       const warned = lpgKg !== LPG.cylinderKg && Math.abs(lpgPrice - LPG.priceEur) < 0.001;
       const method = warned
         ? `Įrašyta ${fmt(LPG.priceEur, 2)} € yra ${LPG.cylinderKg} kg baliono kaina. Pasirinktam balionui įrašykite jo kainą. Kitų dydžių kainų čia nėra.`
-        : "Šildymas — klasė × plotas, prie kitokios temperatūros dauginama iš Vilniaus dienolaipsnių. Karštas vanduo — 40 l ir 51 kWh/m³. SND — 12,8 kWh/kg ir naudingumas 0,95. Baliono depozitas ir pristatymas neįskaičiuoti.";
+        : `Šildymas — klasė × plotas, prie kitokios temperatūros dauginama iš Vilniaus dienolaipsnių. Karštas vanduo — 40 l ir 51 kWh/m³. SND — 12,8 kWh/kg ir naudingumas 0,95. Baliono depozitas ir pristatymas neįskaičiuoti. Dujos — Ignitis (${IGNITIS_GAS.url}), ${IGNITIS_GAS.checkedOn}: Minimalus iki 300 m³ yra 0,93 €/m³ ir 1,17 €/mėn., Optimalus iki 20 000 m³ yra 0,69 €/m³ ir 3,99 €/mėn. Elektra — ${ELECTRICITY.supplier} ${ELECTRICITY.plan}, ${fmt(ELECTRICITY.eurPerKwh, 3)} €/kWh, Lietuvos energetikos agentūra ${ELECTRICITY.checkedOn}. Ignitis visuomeninis Standartinis yra ${fmt(ELECTRICITY.ignitisStandardEur, 3)} €/kWh ir tinka tik suvartojantiems mažiau nei 1000 kWh per metus.`;
       return {
         headlineLabel: "Pigiausia per metus",
         headline: `${Math.round(Math.min(...rows.map((row) => row.eur)))} €`,
@@ -976,7 +1026,13 @@ export function computeCalculator(id, raw = {}) {
         bills: rows,
         heat: season.heatRaw,
         dhw: season.dhwRaw,
-        link: { href: LPG.url, label: `${LPG.shop}: ${LPG.product}` },
+        link: { href: IGNITIS_GAS.url, label: "Ignitis: dujų kainos" },
+        links: [
+          { href: IGNITIS_GAS.url, label: "Ignitis dujos" },
+          { href: ELECTRICITY.url, label: "LEA: elektros planų kainos" },
+          { href: ELECTRICITY.ignitisUrl, label: "Ignitis visuomeninė elektra" },
+          { href: LPG.url, label: `${LPG.shop}: ${LPG.product}` },
+        ],
         note: `Vidutinė Lietuvos žiema yra apie −3…−5 °C, priklausomai nuo vietovės. Prie tokios lauko temperatūros rekomenduojamas šilumos siurblio COP yra 2,3 grindiniam šildymui ir 2,0 radiatoriams. Kataloginio SCOP 4 imti nereikia: tai švelnių sąlygų maksimumas. ${method}`,
       };
     }
