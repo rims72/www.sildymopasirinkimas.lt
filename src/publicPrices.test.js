@@ -116,6 +116,8 @@ test("prices the other checked devices from the same quote list", () => {
   expect(priced.find((device) => device.id === "gas-baxi-24").price_eur).toBe(1099);
   expect(priced.find((device) => device.id === "gas-ariston-24").price_eur).toBe(1251);
   expect(priced.find((device) => device.id === "gas-protherm-puma-24").price_eur).toBe(910);
+  expect(priced.find((device) => device.id === "gas-protherm-puma-24").model).toBe("Puma Condens 18/24 MKV");
+  expect(priced.find((device) => device.id === "gas-protherm-puma-24").power_kw).toBe(20);
   ["gas-bugatti-25", "gas-baxi-24", "gas-ariston-24", "gas-protherm-puma-24"].forEach((id) => {
     expect(catalog.budget.some((device) => device.id === id)).toBe(true);
   });

@@ -548,11 +548,11 @@
       ]
     },
     "gas-protherm-puma-24": {
-      "model": "Puma Condens 24/24 MKV",
+      "model": "Puma Condens 18/24 MKV",
       "sku": "8000021888",
-      "power_kw": 24,
+      "power_kw": 20,
       "dhw": "momentinis",
-      "note": "Šildymas 6,6–24 kW, karštas vanduo momentinis 24 kW. Technika Jums 910 €, Aqua Jazz 914 €.",
+      "note": "Oficialiai 18/24 MKV: šildymas 6,6–20 kW (50/30 °C), karštas vanduo 24 kW. Parduotuvės antraštė kartais 24/24 MKV. Technika Jums 910 €, Aqua Jazz 914 €.",
       "checked_on": "2026-11-13",
       "offers": [
         {

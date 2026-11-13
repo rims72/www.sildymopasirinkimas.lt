@@ -707,9 +707,9 @@
       "tier": "budget",
       "type": "Kondensacinis dujinis katilas",
       "brand": "Protherm",
-      "model": "Puma Condens 24/24 MKV",
+      "model": "Puma Condens 18/24 MKV",
       "fuel": "gas",
-      "power_kw": 24,
+      "power_kw": 20,
       "price_eur": null,
       "dhw": "momentinis",
       "solar_compatible": true,
@@ -718,7 +718,7 @@
       "scop": null,
       "min_temp": null,
       "sound_db": 50,
-      "notes": "Šildymas 6,6–24 kW, karštas vanduo momentinis 24 kW.",
+      "notes": "Šildymas 6,6–20 kW (50/30 °C), karštas vanduo momentinis 24 kW. Parduotuvėse kartais pavadinta 24/24 MKV.",
       "price_source": "Vieša kaina nerasta."
     },
     {
