@@ -418,6 +418,154 @@
           "price_eur": 1244
         }
       ]
+    },
+    "gas-protherm-gepard-25": {
+      "model": "Gepard Condens 18/25 MKV",
+      "sku": "0010017236",
+      "power_kw": 19.1,
+      "dhw": "momentinis",
+      "note": "Šildymas 5,3–19,1 kW (50/30 °C), karštas vanduo momentinis iki 25,2 kW. Technika Jums 1 095 €, Aqua Jazz 1 105 €.",
+      "checked_on": "2026-11-13",
+      "offers": [
+        {
+          "shop": "Technika Jums",
+          "url": "https://www.technikajums.lt/produktas/dujinis-kondensacinis-katilas-gepard-condens-25-mkv/",
+          "price_eur": 1095
+        },
+        {
+          "shop": "Aqua Jazz",
+          "url": "https://www.e-aquajazz.lt/dujinis-kondensacinis-katilas-protherm-gepard-condens-25-mkv",
+          "price_eur": 1105
+        }
+      ]
+    },
+    "gas-bugatti-25": {
+      "model": "VARME COND 25",
+      "power_kw": 23.4,
+      "dhw": "momentinis",
+      "note": "Federica Bugatti. Šildymas 3,7–23,4 kW, karštas vanduo 10,3 l/min. Dujų darbai 940 €.",
+      "checked_on": "2026-11-13",
+      "offers": [
+        {
+          "shop": "Dujų darbai",
+          "url": "https://dujudarbai.lt/produktas/varme-cond-25-kw-momentinis",
+          "price_eur": 940
+        }
+      ]
+    },
+    "gas-bugatti-25b": {
+      "model": "VARME COND 25B",
+      "power_kw": 25.1,
+      "dhw": "atskiras",
+      "note": "Federica Bugatti. Vienas kontūras, 25,1 kW. Dujų darbai 920 €.",
+      "checked_on": "2026-11-13",
+      "offers": [
+        {
+          "shop": "Dujų darbai",
+          "url": "https://dujudarbai.lt/produktas/varme-cond-25-kw-boileriui/",
+          "price_eur": 920
+        }
+      ]
+    },
+    "gas-bugatti-35": {
+      "model": "VARME COND 35",
+      "power_kw": 34.5,
+      "dhw": "momentinis",
+      "note": "Federica Bugatti. Šildymas 5,3–34,5 kW, karštas vanduo 14,8 l/min. Dujų darbai 990 €.",
+      "checked_on": "2026-11-13",
+      "offers": [
+        {
+          "shop": "Dujų darbai",
+          "url": "https://dujudarbai.lt/produktas/varme-cond-35-kw-momentinis",
+          "price_eur": 990
+        }
+      ]
+    },
+    "gas-bugatti-35b": {
+      "model": "VARME COND 35B",
+      "power_kw": 35,
+      "dhw": "atskiras",
+      "note": "Federica Bugatti. Vienas kontūras, modelio klasė 35 kW. Dujų darbai 980 €.",
+      "checked_on": "2026-11-13",
+      "offers": [
+        {
+          "shop": "Dujų darbai",
+          "url": "https://dujudarbai.lt/produktas/varme-cond-35-kw-boileriui/",
+          "price_eur": 980
+        }
+      ]
+    },
+    "gas-bugatti-42b": {
+      "model": "VARME COND 42B",
+      "power_kw": 42,
+      "dhw": "atskiras",
+      "note": "Federica Bugatti. Vienas kontūras, modelio klasė 42 kW. Dujų darbai 1 050 €.",
+      "checked_on": "2026-11-13",
+      "offers": [
+        {
+          "shop": "Dujų darbai",
+          "url": "https://dujudarbai.lt/produktas/varme-cond-42-kw-boileriui/",
+          "price_eur": 1050
+        }
+      ]
+    },
+    "gas-baxi-24": {
+      "model": "Duo-tec Compact E1.24",
+      "power_kw": 24.7,
+      "dhw": "atskiras",
+      "note": "Šildymas 3,4–24,7 kW, karštas vanduo atskirame šildytuve. Namams24 1 099 €, e-aukrista 1 190 €.",
+      "checked_on": "2026-11-13",
+      "offers": [
+        {
+          "shop": "Namams24",
+          "url": "https://www.namams24.lt/baxi-dujiniai-katilai",
+          "price_eur": 1099
+        },
+        {
+          "shop": "e-aukrista",
+          "url": "https://e-aukrista.lt/parduotuve/katilai/dujiniai-katilai/kondensaciniai-su-galimybe-pajungti-turini-vandens-sildytuva/baxi-duo-tec-compact-e1-24-dujinis-kondensacinis-katilas/",
+          "price_eur": 1190
+        }
+      ]
+    },
+    "gas-ariston-24": {
+      "model": "Clas One + WiFi 24",
+      "power_kw": 24,
+      "dhw": "momentinis",
+      "note": "24 kW, momentinis karštas vanduo. Namams24 ir e-aukrista po 1 251 €.",
+      "checked_on": "2026-11-13",
+      "offers": [
+        {
+          "shop": "Namams24",
+          "url": "https://www.namams24.lt/dujinis-katilas-ariston-clas-one-24kw-1",
+          "price_eur": 1251
+        },
+        {
+          "shop": "e-aukrista",
+          "url": "https://e-aukrista.lt/parduotuve/katilai/dujiniai-katilai/kondensaciniai-su-momentiniu-vandens-sildytuvu/ariston-clas-one-wifi-24-kw-dujinis-kondensacinis-katilas/",
+          "price_eur": 1251
+        }
+      ]
+    },
+    "gas-protherm-puma-24": {
+      "model": "Puma Condens 18/24 MKV",
+      "sku": "8000021888",
+      "power_kw": 20,
+      "dhw": "momentinis",
+      "note": "Oficialiai 18/24 MKV: šildymas 6,6–20 kW (50/30 °C), karštas vanduo 24 kW. Parduotuvės antraštė kartais 24/24 MKV. Technika Jums 910 €, Aqua Jazz 914 €.",
+      "checked_on": "2026-11-13",
+      "offers": [
+        {
+          "shop": "Technika Jums",
+          "url": "https://www.technikajums.lt/produktas/dujinis-kondensacinis-katilas-protherm-puma-condens-18-24-mkv/",
+          "price_eur": 910
+        },
+        {
+          "shop": "Aqua Jazz",
+          "url": "https://www.e-aquajazz.lt/gazu-kondensacijas-katalitiskais-protherm-puma-condens-1824-mkv",
+          "price_eur": 914
+        }
+      ]
     }
   },
   "valid_days": 7
