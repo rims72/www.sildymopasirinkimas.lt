@@ -269,13 +269,13 @@ function Note({ result }) {
   return (
     <div className="mt-3 text-sm text-slate-500">
       <p>{result.note}</p>
-      {result.link ? (
-        <p className="mt-1">
-          <a className="text-sky-700 underline" href={result.link.href} target="_blank" rel="noopener noreferrer">
-            {result.link.label}
+      {(result.links || (result.link ? [result.link] : [])).map((item) => (
+        <p key={item.href} className="mt-1">
+          <a className="text-sky-700 underline" href={item.href} target="_blank" rel="noopener noreferrer">
+            {item.label}
           </a>
         </p>
-      ) : null}
+      ))}
     </div>
   );
 }
