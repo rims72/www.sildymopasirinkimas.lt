@@ -400,6 +400,29 @@ function pickPipe(flowM3h, catalog) {
   return ranked.find((pipe) => pipe.ok) || { ...ranked[ranked.length - 1], overVelocity: true };
 }
 
+function heatingRunDropKpa(lengthM, flowM3h, innerMm, material) {
+  const route = Math.min(80, Math.max(1, lengthM));
+  return frictionKpa(route, flowM3h, innerMm, material) * 2;
+}
+
+function rankHeatingPipes(flowM3h, catalog, lengthM, material) {
+  return catalog.map(([sizeLabel, innerMm]) => {
+    const velocity = velocityMps(flowM3h, innerMm);
+    const dropKpa = heatingRunDropKpa(lengthM, flowM3h, innerMm, material);
+    const velocityOk = velocity <= MAX_VELOCITY + 1e-9;
+    const pressureOk = dropKpa <= LOOP_DESIGN_KPA + 1e-6;
+    return {
+      sizeLabel,
+      innerMm,
+      velocity,
+      dropKpa,
+      velocityOk,
+      pressureOk,
+      ok: velocityOk && pressureOk,
+    };
+  });
+}
+
 function pipeWaterLitres(innerMm, lengthM) {
   const radius = innerMm / 2000;
   return Math.PI * radius * radius * Math.max(0, lengthM) * 1000;
@@ -566,13 +589,14 @@ export const CALCULATORS = [
   {
     id: "vamzdzio-dydis",
     name: "Vamzdžio dydis",
-    description: "Vamzdis pagal galią arba srautą — tikri tipai, greitis apie 1,25 m/s.",
+    description: "Vamzdis pagal srautą ir trasos ilgį. Ilgesnei trasai reikia storesnio vamzdžio.",
     fields: [
       choice("input", "Įvestis", [["power", "Galia kW"], ["flow", "Srautas m³/h"], ["ls", "Srautas l/s"]], "flow"),
       number("power", "Galia, kW", 8, { min: 1, max: 40, step: 0.5, show: (v) => v.input === "power" }),
       number("flow", "Srautas, m³/h", 1.03, { min: 0.1, max: 6, step: 0.05, show: (v) => v.input === "flow" }),
       number("flowLs", "Srautas, l/s", 0.29, { min: 0.03, max: 1.7, step: 0.01, show: (v) => v.input === "ls" }),
       number("delta", "ΔT, K", 5, { min: 3, max: 12, step: 1, show: (v) => v.input === "power" }),
+      number("length", "Trasos ilgis, m", 15, { min: 1, max: 80, step: 1 }),
       choice("material", "Medžiaga", Object.entries(PIPE_KIND_NAME), "multilayer"),
       choice("forced", "Vamzdis", [["auto", "Parinkti"]], "auto"),
     ],
@@ -815,18 +839,30 @@ export function computeCalculator(id, raw = {}) {
       let flow = num(values.flow, 1.03);
       if (values.input === "power") flow = flowM3hFromKw(num(values.power, 8), num(values.delta, 5));
       if (values.input === "ls") flow = num(values.flowLs, 0.29) * 3.6;
+      const length = Math.min(80, Math.max(1, num(values.length, 15)));
+      const material = ROUGHNESS_M[values.material] ? values.material : "multilayer";
       const catalog = values.material === "multilayer"
         ? [["16 mm", 12], ...MAIN_PIPES.multilayer]
         : MAIN_PIPES[values.material] || MAIN_PIPES.multilayer;
-      const forced = values.forced !== "auto" && catalog.find((pipe) => pipe[0] === values.forced);
-      const pipe = forced
-        ? { sizeLabel: forced[0], innerMm: forced[1], velocity: velocityMps(flow, forced[1]) }
-        : pickPipe(flow, catalog);
+      const ranked = rankHeatingPipes(flow, catalog, length, material);
+      const forced = values.forced !== "auto" && ranked.find((pipe) => pipe.sizeLabel === values.forced);
+      const pipe = forced || ranked.find((item) => item.ok) || { ...ranked[ranked.length - 1], overVelocity: true };
+      const tooFast = pipe.velocity > MAX_VELOCITY;
+      const tooLong = pipe.dropKpa > LOOP_DESIGN_KPA;
+      const note = tooFast && tooLong
+        ? "Greitis viršija 1,25 m/s, o tiekimas ir grįžimas — 25 kPa. Reikia storesnio vamzdžio arba trumpesnės trasos."
+        : tooFast
+          ? "Greitis viršija 1,25 m/s — reikia storesnio vamzdžio."
+          : tooLong
+            ? `Per ${fmt(length, 0)} m trasą tiekimas ir grįžimas viršija 25 kPa. Reikia storesnio vamzdžio arba trumpesnės trasos.`
+            : "Imamas mažiausias vamzdis, kurio greitis neviršija 1,25 m/s, o tiekimo ir grįžimo nuostolis telpa į 25 kPa. Ilgesnei trasai reikia storesnio vamzdžio.";
       return result("Vamzdžio dydis", pipe.sizeLabel, pipe.innerMm, [
         ["Srautas", `${fmt(flow, 2)} m³/h`],
+        ["Trasos ilgis", `${fmt(length, 0)} m`],
         ["Greitis", `${fmt(pipe.velocity, 2)} m/s`],
         ["Vidus", `${fmt(pipe.innerMm, 1)} mm`],
-      ], pipe.velocity > MAX_VELOCITY ? "Greitis viršija 1,25 m/s — reikia storesnio vamzdžio." : "Imamas mažiausias vamzdis, kurio greitis neviršija 1,25 m/s.");
+        ["Tiekimas ir grįžimas", `${fmt(pipe.dropKpa, 1)} kPa`],
+      ], note);
     }
     case "vamzdzio-nuostoliai": {
       const area = clampArea(values.area);

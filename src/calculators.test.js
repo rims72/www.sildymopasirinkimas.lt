@@ -85,6 +85,16 @@ test("system fluid adds 600 m of 16 mm pipe and glycol for a monoblock", () => {
   expect(split.note).toContain("Split");
 });
 
+test("a longer heating run steps up to a larger pipe", () => {
+  const short = computeCalculator("vamzdzio-dydis", { length: 5 });
+  const long = computeCalculator("vamzdzio-dydis", { length: 40 });
+
+  expect(short.headline).toBe("26 mm");
+  expect(long.headline).toBe("32 mm");
+  expect(long.rows.find((row) => row[0] === "Trasos ilgis")[1]).toBe("40 m");
+  expect(Number(long.rows.find((row) => row[0] === "Tiekimas ir grįžimas")[1].replace(",", ".").replace(" kPa", ""))).toBeLessThanOrEqual(25);
+});
+
 test("every Hidraulika calculator plus propane is on the page list", () => {
   expect(CALCULATORS.map((item) => item.id)).toEqual([
     "silumos-poreikis",
